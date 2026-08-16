@@ -4,9 +4,7 @@ import {
   useState,
 } from "react";
 
-import {
-  onAuthStateChanged,
-} from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import {
   doc,
@@ -29,6 +27,8 @@ export function AuthProvider({ children }) {
       auth,
       async (firebaseUser) => {
         try {
+          setLoading(true);
+
           if (!firebaseUser) {
             setUser(null);
             setUserData(null);
@@ -47,9 +47,11 @@ export function AuthProvider({ children }) {
           const userSnapshot = await getDoc(userRef);
 
           if (userSnapshot.exists()) {
-            setUserData(userSnapshot.data());
+            setUserData({
+              id: userSnapshot.id,
+              ...userSnapshot.data(),
+            });
           } else {
-            // Create a default patient profile
             const newUser = {
               name: firebaseUser.displayName || "",
               email: firebaseUser.email || "",
@@ -62,10 +64,14 @@ export function AuthProvider({ children }) {
 
             await setDoc(userRef, newUser);
 
-            setUserData(newUser);
+            setUserData({
+              id: firebaseUser.uid,
+              ...newUser,
+            });
           }
         } catch (error) {
           console.error("Auth context error:", error);
+          setUserData(null);
         } finally {
           setLoading(false);
         }
@@ -75,15 +81,20 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  const value = {
+    user,
+    userData,
+    role: userData?.role || null,
+    loading,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        userData,
-        loading,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
+
+export const logoutUser = async() => {
+  await signOut(auth);
+};

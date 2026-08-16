@@ -5,50 +5,18 @@ import {
   Clock,
   Bot,
   ArrowRight,
+  ShieldCheck,
+  Users,
+  CheckCircle2
 } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="landing-page">
-
-      <nav className="navbar">
-
-        <Link
-          to="/"
-          className="logo"
-        >
-          <Activity size={28} />
-          MediPulse
-        </Link>
-
-        <div className="nav-links">
-          <Link to="/about">
-            About
-          </Link>
-
-          <Link
-            to="/login"
-            className="nav-login"
-          >
-            Login
-          </Link>
-
-          <Link
-            to="/register"
-            className="nav-button"
-          >
-            Get Started
-          </Link>
-        </div>
-
-      </nav>
-
-
+    <div className="landing-page fade-in">
       <main className="hero">
-
         <div className="hero-badge">
-          <span className="status-dot"></span>
-          Real-time healthcare
+          <span className="status-dot-pulse" style={{ background: "var(--color-primary-light)" }}></span>
+          <span>Real-time Healthcare Queue Network Active</span>
         </div>
 
         <h1>
@@ -57,65 +25,54 @@ export default function Landing() {
         </h1>
 
         <p>
-          Know whether your doctor is available,
-          join the queue remotely, find nearby
-          healthcare facilities and get basic
-          health assistance — all in one place.
+          Know whether your doctor is available before traveling, join queue lines remotely, 
+          find nearby clinics, and access AI health assistance — all from one unified platform.
         </p>
 
         <div className="hero-buttons">
-
-          <Link
-            to="/register"
-            className="primary-button"
-          >
-            Get Started
+          <Link to="/register" className="primary-button">
+            Get Started Free
             <ArrowRight size={18} />
           </Link>
 
-          <Link
-            to="/about"
-            className="secondary-button"
-          >
-            Explore MediPulse
+          <Link to="/about" className="secondary-button">
+            Explore MediPulse Network
           </Link>
-
         </div>
 
-
+        {/* Feature Grid */}
         <div className="feature-grid">
-
           <div className="feature-card">
-            <MapPin size={25} />
+            <div className="stat-icon-wrapper" style={{ marginBottom: "16px" }}>
+              <MapPin size={24} />
+            </div>
             <h3>Live Availability</h3>
             <p>
-              Know if a doctor is currently
-              available before travelling.
+              Check doctor availability in real-time before stepping out of your house. Avoid wasted hospital trips.
             </p>
           </div>
 
           <div className="feature-card">
-            <Clock size={25} />
-            <h3>Smart Queue</h3>
+            <div className="stat-icon-wrapper" style={{ marginBottom: "16px" }}>
+              <Clock size={24} />
+            </div>
+            <h3>Smart Queue Token</h3>
             <p>
-              Get your token remotely and
-              track the live queue.
+              Get your consultation queue token remotely, track live serving tokens, and arrive right when it's your turn.
             </p>
           </div>
 
           <div className="feature-card">
-            <Bot size={25} />
+            <div className="stat-icon-wrapper" style={{ marginBottom: "16px" }}>
+              <Bot size={24} />
+            </div>
             <h3>AI Health Assistant</h3>
             <p>
-              Get basic guidance for minor
-              health concerns.
+              Describe symptoms to receive instant preliminary guidance, triage advice, and emergency recommendations 24/7.
             </p>
           </div>
-
         </div>
-
       </main>
-
     </div>
   );
 }

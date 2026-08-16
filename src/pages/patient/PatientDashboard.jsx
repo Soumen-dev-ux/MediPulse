@@ -1,329 +1,246 @@
-import { useEffect, useState } from "react";
-
-import {
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
-
-import {
-  MapPin,
-  Clock,
-  Stethoscope,
-  LogOut,
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/useAuth";
+import { logoutUser } from "../../firebase/auth";
+import { 
+  Calendar, 
+  FileText, 
+  MapPin, 
+  Clock, 
+  Stethoscope, 
+  Bot, 
+  AlertTriangle, 
+  CheckCircle2, 
+  ArrowRight,
+  PhoneCall,
+  Activity,
+  PlusCircle
 } from "lucide-react";
 
-import { db } from "../../firebase/config";
-
-import useAuth from "../../Context/useAuth";
-
-import { logoutUser } from "../../firebase/auth";
-
-import { useNavigate } from "react-router-dom";
-
-
-export default function PatientDashboard() {
-
+const PatientDashboard = () => {
   const { user, userData } = useAuth();
-
   const navigate = useNavigate();
+  const [queueToken, setQueueToken] = useState("#A-14");
+  const [estimatedWait, setEstimatedWait] = useState("18 mins");
 
-  const [facility, setFacility] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-
-  useEffect(() => {
-
-    // DEMO FACILITY
-    const facilityRef = doc(
-      db,
-      "facilities",
-      "city-care-clinic"
-    );
-
-
-    const unsubscribe =
-      onSnapshot(
-        facilityRef,
-        (snapshot) => {
-
-          if (snapshot.exists()) {
-
-            setFacility({
-              id: snapshot.id,
-              ...snapshot.data(),
-            });
-
-          }
-
-          setLoading(false);
-
-        },
-        (error) => {
-
-          console.error(
-            "Facility listener error:",
-            error
-          );
-
-          setLoading(false);
-
-        }
-      );
-
-
-    return unsubscribe;
-
-  }, []);
-
-
-  const handleLogout = async () => {
-
-    await logoutUser();
-
-    navigate("/login");
-
-  };
-
-
-  if (loading) {
-
-    return (
-      <div className="loading-screen">
-        Loading healthcare facilities...
-      </div>
-    );
-
-  }
-
-
-  const doctorPresent =
-    facility?.isDoctorPresent;
-
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
 
   return (
-    <div className="dashboard">
-
-      <header className="dashboard-header">
-
+    <div className="dashboard fade-in">
+      {/* Welcome Header */}
+      <div className="dashboard-header">
         <div>
-
-          <p className="eyebrow">
-            PATIENT PORTAL
-          </p>
-
-          <h1>
-            Good morning,{" "}
-            {userData?.name ||
-              user?.email?.split("@")[0] ||
-              "Patient"}{" "}
-            👋
-          </h1>
-
+          <p className="eyebrow">PATIENT DASHBOARD · {formattedDate}</p>
+          <h1>Welcome back, {userData?.name || user?.email?.split('@')[0] || "Patient"} 👋</h1>
+          <p className="dashboard-subtitle">Monitor live healthcare queues, upcoming visits, and active prescriptions.</p>
         </div>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button 
+            className="primary-button" 
+            onClick={() => alert("Book Appointment feature: Opening hospital slot picker...")}
+          >
+            <PlusCircle size={18} />
+            Book Appointment
+          </button>
+        </div>
+      </div>
 
-
-        <button
-          className="logout-button"
-          onClick={handleLogout}
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
-
-      </header>
-
-
-      <section className="stats-grid">
+      {/* KPI Stats Grid */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon-wrapper">
+            <Calendar size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Upcoming Visits</span>
+            <strong>3 Scheduled</strong>
+          </div>
+        </div>
 
         <div className="stat-card">
-
-          <MapPin size={24} />
-
-          <div>
-            <span>
-              Nearby Facilities
-            </span>
-
-            <strong>1</strong>
+          <div className="stat-icon-wrapper">
+            <Stethoscope size={26} />
           </div>
-
+          <div className="stat-card-info">
+            <span>Assigned Specialists</span>
+            <strong>8 Active</strong>
+          </div>
         </div>
-
 
         <div className="stat-card">
-
-          <Clock size={24} />
-
-          <div>
-            <span>
-              Current Token
-            </span>
-
-            <strong>
-              #{facility?.currentToken || 0}
-            </strong>
+          <div className="stat-icon-wrapper">
+            <FileText size={26} />
           </div>
-
+          <div className="stat-card-info">
+            <span>Prescriptions</span>
+            <strong>5 Available</strong>
+          </div>
         </div>
-
 
         <div className="stat-card">
+          <div className="stat-icon-wrapper" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
+            <Activity size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Queue Status</span>
+            <strong>Active (#A-14)</strong>
+          </div>
+        </div>
+      </div>
 
-          <Stethoscope size={24} />
-
-          <div>
-            <span>
-              Doctor Status
+      {/* Main Two-Column Layout Grid */}
+      <div className="dashboard-layout-grid">
+        {/* Left Column: Next Visit & Queue Card */}
+        <div className="card-panel">
+          <div className="panel-title-bar">
+            <h2>Your Next Scheduled Visit</h2>
+            <span className="status-badge confirmed">
+              <span className="status-dot-pulse"></span> Confirmed & Live
             </span>
-
-            <strong>
-              {doctorPresent
-                ? "Present"
-                : "Away"}
-            </strong>
           </div>
-
-        </div>
-
-      </section>
-
-
-      <section className="dashboard-section">
-
-        <div className="section-heading">
-
-          <div>
-            <p className="eyebrow">
-              NEARBY HEALTHCARE
-            </p>
-
-            <h2>
-              Find a doctor
-            </h2>
-          </div>
-
-        </div>
-
-
-        {facility ? (
 
           <div className="facility-card">
-
             <div className="facility-top">
-
               <div>
-
-                <span className="facility-category">
-                  CLINIC
-                </span>
-
-                <h3>
-                  {facility.name}
-                </h3>
-
-                <p>
-                  <MapPin size={15} />
-                  {facility.address}
-                </p>
-
+                <span className="facility-category">CARDIOLOGY & VASCULAR CARE</span>
+                <h3>City Central Hospital</h3>
+                <p><MapPin size={16} /> Block B, Floor 3, Room 302 · Main Campus</p>
               </div>
+            </div>
 
+            <div className="doctor-info-box">
+              <div className="doctor-avatar-circle">DS</div>
+              <div className="doctor-info-text">
+                <strong>Dr. Sharma</strong>
+                <p>Senior Cardiologist · MBBS, MD (Cardiology)</p>
+              </div>
+            </div>
 
-              <div
-                className={
-                  doctorPresent
-                    ? "status present"
-                    : "status away"
-                }
+            <div className="queue-token-box">
+              <div>
+                <span>Appointment Slot</span>
+                <strong>Today · 10:30 AM</strong>
+              </div>
+              <div>
+                <span>Live Queue Token</span>
+                <strong>{queueToken}</strong>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "12px", marginTop: "6px", flexWrap: "wrap" }}>
+              <button 
+                className="primary-button" 
+                style={{ flex: 1, minWidth: "160px" }}
+                onClick={() => alert(`Tracking live queue position for ${queueToken}. Current queue is serving #A-12. Estimated wait: ${estimatedWait}.`)}
               >
+                <Clock size={16} /> Track Live Queue ({estimatedWait})
+              </button>
+              <button 
+                className="secondary-button"
+                onClick={() => alert("Reschedule appointment request sent to clinic administrator.")}
+              >
+                Reschedule
+              </button>
+            </div>
+          </div>
 
-                <span></span>
-
-                {doctorPresent
-                  ? "Doctor Present"
-                  : "Doctor Away"}
-
+          {/* Active Prescriptions Summary */}
+          <div className="panel-title-bar" style={{ marginTop: "10px" }}>
+            <h2>Active Prescriptions</h2>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div className="doctor-info-box" style={{ justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <FileText size={22} style={{ color: "var(--color-primary-light)" }} />
+                <div>
+                  <strong>Amoxicillin 500mg</strong>
+                  <p style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>1 capsule twice daily · 5 days remaining</p>
+                </div>
               </div>
-
+              <span className="status-badge confirmed">Refill Ready</span>
             </div>
 
-
-            <div className="doctor-info">
-
-              <div className="doctor-avatar">
-                {facility.currentDoctor
-                  ? facility.currentDoctor
-                      .charAt(0)
-                      .toUpperCase()
-                  : "D"}
+            <div className="doctor-info-box" style={{ justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <FileText size={22} style={{ color: "var(--color-primary-light)" }} />
+                <div>
+                  <strong>Atorvastatin 10mg</strong>
+                  <p style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>1 tablet at bedtime · 14 days remaining</p>
+                </div>
               </div>
-
-              <div>
-
-                <strong>
-                  {facility.currentDoctor ||
-                    "No doctor assigned"}
-                </strong>
-
-                <p>
-                  General Physician
-                </p>
-
-              </div>
-
+              <span className="status-badge confirmed">Active</span>
             </div>
+          </div>
+        </div>
 
+        {/* Right Column: Quick Actions & Health Tools */}
+        <div className="card-panel">
+          <div className="panel-title-bar">
+            <h2>Quick Actions</h2>
+          </div>
 
-            <div className="queue-info">
-
-              <div>
-                <span>
-                  Now Serving
-                </span>
-
-                <strong>
-                  #{facility.currentToken || 0}
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Queue
-                </span>
-
-                <strong>
-                  {facility.lastToken || 0}
-                  {" "}people
-                </strong>
-              </div>
-
-            </div>
-
-
-            <button
-              className="primary-button"
-              disabled={!doctorPresent}
+          <div className="quick-actions-grid">
+            <div 
+              className="quick-action-card" 
+              onClick={() => alert("Opening MediPulse AI Health Assistant...")}
             >
-              {doctorPresent
-                ? "Get Serial Number"
-                : "Doctor Currently Away"}
-            </button>
+              <div className="action-icon">
+                <Bot size={22} />
+              </div>
+              <div className="action-details">
+                <strong>AI Health Assistant</strong>
+                <span>Instant symptom guidance & advice</span>
+              </div>
+            </div>
 
+            <div 
+              className="quick-action-card" 
+              onClick={() => alert("Searching nearby connected healthcare facilities & doctors...")}
+            >
+              <div className="action-icon">
+                <MapPin size={22} />
+              </div>
+              <div className="action-details">
+                <strong>Find Nearby Clinics</strong>
+                <span>Check live doctor availability</span>
+              </div>
+            </div>
+
+            <div 
+              className="quick-action-card" 
+              onClick={() => alert("Connecting to 24/7 Teleconsultation hotline...")}
+            >
+              <div className="action-icon">
+                <Stethoscope size={22} />
+              </div>
+              <div className="action-details">
+                <strong>Virtual Teleconsult</strong>
+                <span>Speak with an on-call doctor</span>
+              </div>
+            </div>
+
+            <div 
+              className="quick-action-card"
+              style={{ borderLeft: "4px solid var(--color-danger)" }}
+              onClick={() => alert("Emergency SOS: Contacting dispatch center...")}
+            >
+              <div className="action-icon" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#fca5a5" }}>
+                <AlertTriangle size={22} />
+              </div>
+              <div className="action-details">
+                <strong style={{ color: "#fca5a5" }}>Emergency Assistance</strong>
+                <span>Dispatch ambulance & alert doctor</span>
+              </div>
+            </div>
           </div>
-
-        ) : (
-
-          <div className="empty-state">
-            No healthcare facilities found.
-          </div>
-
-        )}
-
-      </section>
-
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PatientDashboard;

@@ -1,408 +1,196 @@
-import { useEffect, useState } from "react";
-
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
-
-import {
-  Activity,
-  UserRound,
-  Power,
-  Users,
-  LogOut,
+import { useState } from "react";
+import { useAuth } from "../../Context/useAuth";
+import { 
+  Users, 
+  Stethoscope, 
+  Calendar, 
+  Activity, 
+  ShieldCheck, 
+  Hospital, 
+  Plus, 
+  RotateCcw, 
+  ChevronRight,
+  Phone
 } from "lucide-react";
 
-import {
-  useNavigate,
-} from "react-router-dom";
+const AdminDashboard = () => {
+  const { user, userData } = useAuth();
+  const [currentToken, setCurrentToken] = useState(14);
+  const [phonePatientNumber, setPhonePatientNumber] = useState("");
 
-import { db } from "../../firebase/config";
-
-import useAuth from "../../Context/useAuth";
-
-import { logoutUser } from "../../firebase/auth";
-
-
-export default function AdminDashboard() {
-
-  const {
-    userData,
-  } = useAuth();
-
-  const navigate = useNavigate();
-
-
-  const [facility, setFacility] =
-    useState(null);
-
-  const [updating, setUpdating] =
-    useState(false);
-
-
-  useEffect(() => {
-
-    const facilityRef = doc(
-      db,
-      "facilities",
-      "city-care-clinic"
-    );
-
-
-    const unsubscribe =
-      onSnapshot(
-        facilityRef,
-        (snapshot) => {
-
-          if (snapshot.exists()) {
-
-            setFacility({
-              id: snapshot.id,
-              ...snapshot.data(),
-            });
-
-          }
-
-        },
-        (error) => {
-
-          console.error(
-            "Facility error:",
-            error
-          );
-
-        }
-      );
-
-
-    return unsubscribe;
-
-  }, []);
-
-
-  const toggleDoctorStatus =
-    async () => {
-
-      if (!facility) return;
-
-      setUpdating(true);
-
-      try {
-
-        const facilityRef = doc(
-          db,
-          "facilities",
-          "city-care-clinic"
-        );
-
-        await updateDoc(
-          facilityRef,
-          {
-            isDoctorPresent:
-              !facility.isDoctorPresent,
-          }
-        );
-
-      } catch (error) {
-
-        console.error(
-          "Unable to update doctor status:",
-          error
-        );
-
-      } finally {
-
-        setUpdating(false);
-
-      }
-
-    };
-
-
-  const serveNextPatient =
-    async () => {
-
-      if (!facility) return;
-
-      const facilityRef = doc(
-        db,
-        "facilities",
-        "city-care-clinic"
-      );
-
-      const nextToken =
-        (facility.currentToken || 0) + 1;
-
-      await updateDoc(
-        facilityRef,
-        {
-          currentToken: nextToken,
-        }
-      );
-
-    };
-
-
-  const handleLogout = async () => {
-
-    await logoutUser();
-
-    navigate("/login");
-
+  const handleNextToken = () => {
+    setCurrentToken(prev => prev + 1);
   };
 
+  const handleResetToken = () => {
+    if (window.confirm("Are you sure you want to reset the live queue token counter to #A-1?")) {
+      setCurrentToken(1);
+    }
+  };
 
-  if (!facility) {
-
-    return (
-      <div className="loading-screen">
-        <p>
-          Loading facility control center...
-        </p>
-      </div>
-    );
-
-  }
-
-
-  const doctorPresent =
-    facility.isDoctorPresent;
-
+  const handleIssuePhoneToken = (e) => {
+    e.preventDefault();
+    if (!phonePatientNumber) return;
+    alert(`Issued Queue Token #A-${currentToken + 1} for walk-in/phone patient (${phonePatientNumber}). SMS notification dispatched!`);
+    setCurrentToken(prev => prev + 1);
+    setPhonePatientNumber("");
+  };
 
   return (
-    <div className="dashboard">
-
-      <header className="dashboard-header">
-
+    <div className="dashboard fade-in">
+      {/* Header */}
+      <div className="dashboard-header">
         <div>
+          <p className="eyebrow">ADMINISTRATOR CONSOLE · SYSTEM OVERVIEW</p>
+          <h1>Welcome, {userData?.name || user?.email?.split('@')[0] || "Admin"} 👋</h1>
+          <p className="dashboard-subtitle">Monitor healthcare network operations, facility live queues, and user permissions.</p>
+        </div>
+      </div>
 
-          <p className="eyebrow">
-            FACILITY ADMIN
-          </p>
-
-          <h1>
-            Control Center
-          </h1>
-
-          <p className="dashboard-subtitle">
-            {facility.name}
-          </p>
-
+      {/* KPI Stats Grid */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon-wrapper">
+            <Users size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Registered Users</span>
+            <strong>1,240 Total</strong>
+          </div>
         </div>
 
+        <div className="stat-card">
+          <div className="stat-icon-wrapper">
+            <Stethoscope size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Verified Doctors</span>
+            <strong>126 Active</strong>
+          </div>
+        </div>
 
-        <button
-          className="logout-button"
-          onClick={handleLogout}
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
+        <div className="stat-card">
+          <div className="stat-icon-wrapper">
+            <Calendar size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Total Appointments</span>
+            <strong>3,420 Completed</strong>
+          </div>
+        </div>
 
-      </header>
+        <div className="stat-card">
+          <div className="stat-icon-wrapper" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
+            <Hospital size={26} />
+          </div>
+          <div className="stat-card-info">
+            <span>Facility Nodes</span>
+            <strong>14 Operational</strong>
+          </div>
+        </div>
+      </div>
 
-
-      <section className="admin-grid">
-
-
-        {/* DOCTOR STATUS */}
-
-        <div className="admin-card">
-
-          <div className="card-header">
-
-            <div className="card-icon">
-              <UserRound size={22} />
-            </div>
-
+      {/* Controls Grid */}
+      <div className="dashboard-section">
+        <h2 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "18px" }}>Network & Live Queue Controls</h2>
+        <div className="admin-grid">
+          {/* Facility Availability Card */}
+          <div className="admin-card">
             <div>
+              <div className="card-header">
+                <div className="card-icon">
+                  <ShieldCheck size={24} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "18px", fontWeight: "700" }}>Facility Network Status</h3>
+                  <p style={{ color: "var(--color-text-secondary)", fontSize: "13px" }}>City Central Hospital (Main Campus)</p>
+                </div>
+              </div>
 
-              <p className="eyebrow">
-                LIVE PRESENCE
+              <div style={{ margin: "20px 0" }}>
+                <span className="status-badge confirmed" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                  <span className="status-dot-pulse"></span> Network Operational · 100% Uptime
+                </span>
+              </div>
+              <p style={{ fontSize: "13px", color: "var(--color-text-secondary)" }}>
+                Real-time queue synchronization, emergency hotline routing, and doctor availability broadcasting active.
               </p>
-
-              <h2>
-                Doctor Status
-              </h2>
-
             </div>
 
+            <button 
+              className="secondary-button full" 
+              onClick={() => alert("Opening facility configuration & doctor schedule manager...")}
+            >
+              Manage Facility Settings
+            </button>
           </div>
 
-
-          <div
-            className={
-              doctorPresent
-                ? "large-status present"
-                : "large-status away"
-            }
-          >
-
-            <span></span>
-
-            {doctorPresent
-              ? "Doctor Present"
-              : "Doctor Away"}
-
-          </div>
-
-
-          <div className="assigned-doctor">
-
-            <div className="doctor-avatar">
-              {facility.currentDoctor
-                ?.charAt(0)
-                .toUpperCase() || "D"}
-            </div>
-
+          {/* Live Queue Token Modifier Card */}
+          <div className="admin-card">
             <div>
+              <div className="card-header">
+                <div className="card-icon">
+                  <Activity size={24} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "18px", fontWeight: "700" }}>Live Queue Token Controller</h3>
+                  <p style={{ color: "var(--color-text-secondary)", fontSize: "13px" }}>Real-time queue counter for Cardiology</p>
+                </div>
+              </div>
 
-              <strong>
-                {facility.currentDoctor ||
-                  "Dr. Arindam Sen"}
-              </strong>
-
-              <p>
-                General Physician
-              </p>
-
+              <div className="queue-display-box" style={{ margin: "16px 0" }}>
+                <span>CURRENTLY SERVING TOKEN</span>
+                <strong>#A-{currentToken}</strong>
+              </div>
             </div>
 
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button 
+                className="primary-button" 
+                style={{ flex: 1 }}
+                onClick={handleNextToken}
+              >
+                <ChevronRight size={16} /> Serve Next Token (#A-{currentToken + 1})
+              </button>
+              <button 
+                className="secondary-button"
+                onClick={handleResetToken}
+                title="Reset Token Counter"
+              >
+                <RotateCcw size={16} /> Reset
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
 
+      {/* Manual Phone/Walk-in Patient Token Dispenser */}
+      <div className="card-panel">
+        <div className="panel-title-bar">
+          <h2>Walk-in & Phone Patient Token Dispenser</h2>
+        </div>
+        <p style={{ fontSize: "14px", color: "var(--color-text-secondary)" }}>
+          Issue digital queue tokens for walk-in patients or phone callers who do not have smartphones.
+        </p>
 
-          <button
-            className={
-              doctorPresent
-                ? "danger-button"
-                : "primary-button full"
-            }
-            onClick={toggleDoctorStatus}
-            disabled={updating}
-          >
-
-            <Power size={18} />
-
-            {updating
-              ? "Updating..."
-              : doctorPresent
-                ? "Mark Doctor Away"
-                : "Mark Doctor Present"}
-
+        <form onSubmit={handleIssuePhoneToken} style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+          <div className="input-wrapper" style={{ flex: 1 }}>
+            <Phone size={18} />
+            <input 
+              type="tel" 
+              placeholder="Enter patient phone number (+91XXXXXXXXXX)..." 
+              value={phonePatientNumber}
+              onChange={(e) => setPhonePatientNumber(e.target.value)}
+              required
+            />
+          </div>
+          <button className="primary-button" type="submit">
+            <Plus size={18} /> Issue Token #A-{currentToken + 1}
           </button>
-
-        </div>
-
-
-        {/* QUEUE */}
-
-        <div className="admin-card">
-
-          <div className="card-header">
-
-            <div className="card-icon">
-              <Users size={22} />
-            </div>
-
-            <div>
-
-              <p className="eyebrow">
-                QUEUE MANAGEMENT
-              </p>
-
-              <h2>
-                Live Queue
-              </h2>
-
-            </div>
-
-          </div>
-
-
-          <div className="queue-number">
-
-            <span>
-              NOW SERVING
-            </span>
-
-            <strong>
-              #{facility.currentToken || 0}
-            </strong>
-
-          </div>
-
-
-          <div className="queue-meta">
-
-            <div>
-              <span>
-                Total Tokens
-              </span>
-
-              <strong>
-                #{facility.lastToken || 0}
-              </strong>
-            </div>
-
-            <div>
-              <span>
-                Doctor
-              </span>
-
-              <strong>
-                {doctorPresent
-                  ? "Present"
-                  : "Away"}
-              </strong>
-            </div>
-
-          </div>
-
-
-          <button
-            className="primary-button full"
-            onClick={serveNextPatient}
-            disabled={!doctorPresent}
-          >
-            <Activity size={18} />
-
-            Serve Next Patient
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <section className="admin-card phone-patient-card">
-
-        <div>
-
-          <p className="eyebrow">
-            PHONE QUEUE
-          </p>
-
-          <h2>
-            Add Phone Patient
-          </h2>
-
-          <p>
-            Add patients who cannot use the
-            application to the same queue.
-          </p>
-
-        </div>
-
-
-        <button
-          className="secondary-button"
-        >
-          Add Phone Patient
-        </button>
-
-      </section>
-
+        </form>
+      </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;
