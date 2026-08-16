@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, User, Activity, ArrowRight } from "lucide-react";
+import { Mail, Lock, User, Activity, ArrowRight, ShieldCheck, Stethoscope, UserCheck } from "lucide-react";
 import { registerWithEmail } from "../firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/config";
@@ -11,6 +11,7 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("patient");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,7 +27,7 @@ export default function Register() {
         name,
         email,
         phone: "",
-        role: "patient",
+        role: role,
         authProvider: "password",
         createdAt: serverTimestamp(),
       });
@@ -97,13 +98,41 @@ export default function Register() {
             </div>
           </div>
 
-          <div className="role-info">
-            <strong>Default Account Type</strong>
-            <span>Patient</span>
+          <div>
+            <label>Select Account Role</label>
+            <div className="auth-methods" style={{ marginTop: "6px", gridTemplateColumns: "1fr 1fr 1fr" }}>
+              <button
+                type="button"
+                className={role === "patient" ? "method active" : "method"}
+                onClick={() => setRole("patient")}
+                style={{ padding: "8px 6px", fontSize: "12px" }}
+              >
+                <UserCheck size={14} />
+                Patient
+              </button>
+              <button
+                type="button"
+                className={role === "doctor" ? "method active" : "method"}
+                onClick={() => setRole("doctor")}
+                style={{ padding: "8px 6px", fontSize: "12px" }}
+              >
+                <Stethoscope size={14} />
+                Doctor
+              </button>
+              <button
+                type="button"
+                className={role === "admin" ? "method active" : "method"}
+                onClick={() => setRole("admin")}
+                style={{ padding: "8px 6px", fontSize: "12px" }}
+              >
+                <ShieldCheck size={14} />
+                Admin
+              </button>
+            </div>
           </div>
 
-          <button className="primary-button full" disabled={loading} style={{ marginTop: "8px" }}>
-            {loading ? "Creating Account..." : "Create Account"}
+          <button className="primary-button full" disabled={loading} style={{ marginTop: "12px" }}>
+            {loading ? "Creating Account..." : `Create ${role.charAt(0).toUpperCase() + role.slice(1)} Account`}
             <ArrowRight size={16} />
           </button>
         </form>

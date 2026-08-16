@@ -17,7 +17,7 @@ import {
   PlusCircle
 } from "lucide-react";
 
-const PatientDashboard = () => {
+const PatientDashboard = ({ onOpenBookModal, onOpenAIModal, onOpenSOS }) => {
   const { user, userData } = useAuth();
   const navigate = useNavigate();
   const [queueToken, setQueueToken] = useState("#A-14");
@@ -41,7 +41,7 @@ const PatientDashboard = () => {
         <div style={{ display: "flex", gap: "12px" }}>
           <button 
             className="primary-button" 
-            onClick={() => alert("Book Appointment feature: Opening hospital slot picker...")}
+            onClick={onOpenBookModal}
           >
             <PlusCircle size={18} />
             Book Appointment
@@ -51,7 +51,7 @@ const PatientDashboard = () => {
 
       {/* KPI Stats Grid */}
       <div className="stats-grid">
-        <div className="stat-card">
+        <div className="stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/patient/healthcare")}>
           <div className="stat-icon-wrapper">
             <Calendar size={26} />
           </div>
@@ -61,7 +61,7 @@ const PatientDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/patient/healthcare")}>
           <div className="stat-icon-wrapper">
             <Stethoscope size={26} />
           </div>
@@ -71,7 +71,7 @@ const PatientDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/patient/prescription")}>
           <div className="stat-icon-wrapper">
             <FileText size={26} />
           </div>
@@ -81,7 +81,7 @@ const PatientDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/patient/queue")}>
           <div className="stat-icon-wrapper" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
             <Activity size={26} />
           </div>
@@ -135,15 +135,15 @@ const PatientDashboard = () => {
               <button 
                 className="primary-button" 
                 style={{ flex: 1, minWidth: "160px" }}
-                onClick={() => alert(`Tracking live queue position for ${queueToken}. Current queue is serving #A-12. Estimated wait: ${estimatedWait}.`)}
+                onClick={() => navigate("/patient/queue")}
               >
-                <Clock size={16} /> Track Live Queue ({estimatedWait})
+                <Clock size={16} /> Track Live Queue Tracker
               </button>
               <button 
                 className="secondary-button"
-                onClick={() => alert("Reschedule appointment request sent to clinic administrator.")}
+                onClick={onOpenBookModal}
               >
-                Reschedule
+                Reschedule Slot
               </button>
             </div>
           </div>
@@ -151,9 +151,12 @@ const PatientDashboard = () => {
           {/* Active Prescriptions Summary */}
           <div className="panel-title-bar" style={{ marginTop: "10px" }}>
             <h2>Active Prescriptions</h2>
+            <button className="secondary-button" style={{ padding: "4px 10px", fontSize: "11px" }} onClick={() => navigate("/patient/prescription")}>
+              View All
+            </button>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <div className="doctor-info-box" style={{ justifyContent: "space-between" }}>
+            <div className="doctor-info-box" style={{ justifyContent: "space-between", cursor: "pointer" }} onClick={() => navigate("/patient/prescription")}>
               <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                 <FileText size={22} style={{ color: "var(--color-primary-light)" }} />
                 <div>
@@ -164,7 +167,7 @@ const PatientDashboard = () => {
               <span className="status-badge confirmed">Refill Ready</span>
             </div>
 
-            <div className="doctor-info-box" style={{ justifyContent: "space-between" }}>
+            <div className="doctor-info-box" style={{ justifyContent: "space-between", cursor: "pointer" }} onClick={() => navigate("/patient/prescription")}>
               <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                 <FileText size={22} style={{ color: "var(--color-primary-light)" }} />
                 <div>
@@ -186,7 +189,8 @@ const PatientDashboard = () => {
           <div className="quick-actions-grid">
             <div 
               className="quick-action-card" 
-              onClick={() => alert("Opening MediPulse AI Health Assistant...")}
+              onClick={onOpenAIModal}
+              style={{ cursor: "pointer" }}
             >
               <div className="action-icon">
                 <Bot size={22} />
@@ -199,7 +203,8 @@ const PatientDashboard = () => {
 
             <div 
               className="quick-action-card" 
-              onClick={() => alert("Searching nearby connected healthcare facilities & doctors...")}
+              onClick={() => navigate("/patient/healthcare")}
+              style={{ cursor: "pointer" }}
             >
               <div className="action-icon">
                 <MapPin size={22} />
@@ -212,27 +217,28 @@ const PatientDashboard = () => {
 
             <div 
               className="quick-action-card" 
-              onClick={() => alert("Connecting to 24/7 Teleconsultation hotline...")}
+              onClick={onOpenBookModal}
+              style={{ cursor: "pointer" }}
             >
               <div className="action-icon">
                 <Stethoscope size={22} />
               </div>
               <div className="action-details">
-                <strong>Virtual Teleconsult</strong>
-                <span>Speak with an on-call doctor</span>
+                <strong>Book Specialist Visit</strong>
+                <span>Reserve consultation appointment</span>
               </div>
             </div>
 
             <div 
               className="quick-action-card"
-              style={{ borderLeft: "4px solid var(--color-danger)" }}
-              onClick={() => alert("Emergency SOS: Contacting dispatch center...")}
+              style={{ borderLeft: "4px solid var(--color-danger)", cursor: "pointer" }}
+              onClick={onOpenSOS}
             >
               <div className="action-icon" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#fca5a5" }}>
                 <AlertTriangle size={22} />
               </div>
               <div className="action-details">
-                <strong style={{ color: "#fca5a5" }}>Emergency Assistance</strong>
+                <strong style={{ color: "#fca5a5" }}>Emergency SOS Dispatch</strong>
                 <span>Dispatch ambulance & alert doctor</span>
               </div>
             </div>

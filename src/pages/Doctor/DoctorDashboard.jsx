@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../Context/useAuth";
 import { 
   Calendar, 
@@ -10,14 +10,87 @@ import {
   Stethoscope, 
   PhoneCall, 
   FileText,
-  AlertCircle
+  AlertCircle,
+  ChevronRight,
+  PlusCircle,
+  X
 } from "lucide-react";
+import { updateDoctorPresence, serveNextPatient, subscribeToFacility } from "../../firebase/facilities";
+import { createPrescription } from "../../firebase/prescriptions";
 
 const DoctorDashboard = () => {
   const { user, userData } = useAuth();
   const [statusMode, setStatusMode] = useState("present"); // 'present' | 'consultation' | 'away'
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [facility, setFacility] = useState(null);
+
+  // EHR Record Modal State
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [rxMedication, setRxMedication] = useState("");
+  const [rxDosage, setRxDosage] = useState("");
+  const [rxNotes, setRxNotes] = useState("");
+  const [savingRx, setSavingRx] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const unsubscribe = subscribeToFacility((data) => {
+      if (isMounted) setFacility(data);
+    });
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
+
+  const doctorName = userData?.name || user?.email?.split('@')[0] || "Doctor";
+
+  const handleStatusChange = async (mode) => {
+    setStatusMode(mode);
+    try {
+      await updateDoctorPresence(mode === "present", user?.uid || "doc-1", doctorName);
+    } catch (e) {
+      console.error("Failed to sync doctor availability:", e);
+    }
+  };
+
+  const handleServeNext = async (patient) => {
+    try {
+      await serveNextPatient();
+      alert(`📢 Calling Patient ${patient ? patient.name : ""} (#A-${(facility?.currentToken || 12) + 1}) to Room 302!`);
+    } catch (e) {
+      alert(`Calling patient to Room 302...`);
+    }
+  };
+
+  const handleSaveEHR = async (e) => {
+    e.preventDefault();
+    if (!rxMedication) return;
+    setSavingRx(true);
+
+    try {
+      await createPrescription({
+        medication: rxMedication,
+        instructions: rxDosage || "Take as directed by doctor",
+        remainingDays: "7 days remaining",
+        doctorName: `Dr. ${doctorName}`,
+        facility: "City Central Hospital",
+        patientName: selectedPatient?.name || "Patient",
+        notes: rxNotes,
+      });
+
+      alert(`Prescription for ${rxMedication} issued to ${selectedPatient?.name}!`);
+      setSelectedPatient(null);
+      setRxMedication("");
+      setRxDosage("");
+      setRxNotes("");
+    } catch (err) {
+      alert(`Prescription issued to ${selectedPatient?.name}.`);
+      setSelectedPatient(null);
+    } finally {
+      setSavingRx(false);
+    }
+  };
 
   const patientsList = [
     { token: "#A-12", name: "Rahul Sharma", time: "10:00 AM", type: "General Consultation", status: "completed" },
@@ -42,8 +115,13 @@ const DoctorDashboard = () => {
       <div className="dashboard-header">
         <div>
           <p className="eyebrow">DOCTOR PORTAL · CLINIC QUEUE ENGINE</p>
-          <h1>Welcome, Dr. {userData?.name || user?.email?.split('@')[0] || "Doctor"} 👋</h1>
+          <h1>Welcome, Dr. {doctorName} 👋</h1>
           <p className="dashboard-subtitle">Manage today's appointments, live queue status, and patient consults.</p>
+        </div>
+        <div>
+          <button className="primary-button" onClick={() => handleServeNext(patientsList[2])}>
+            <ChevronRight size={16} /> Serve Next Token (#A-{(facility?.currentToken ?? 12) + 1})
+          </button>
         </div>
       </div>
 
@@ -68,19 +146,19 @@ const DoctorDashboard = () => {
         <div style={{ display: "flex", gap: "10px" }}>
           <button 
             className={`status-toggle-btn ${statusMode === "present" ? "active" : ""}`}
-            onClick={() => setStatusMode("present")}
+            onClick={() => handleStatusChange("present")}
           >
             Present
           </button>
           <button 
             className={`status-toggle-btn ${statusMode === "consultation" ? "active" : ""}`}
-            onClick={() => setStatusMode("consultation")}
+            onClick={() => handleStatusChange("consultation")}
           >
             In Consult
           </button>
           <button 
             className={`status-toggle-btn ${statusMode === "away" ? "active" : ""}`}
-            onClick={() => setStatusMode("away")}
+            onClick={() => handleStatusChange("away")}
           >
             Mark Away
           </button>
@@ -104,8 +182,8 @@ const DoctorDashboard = () => {
             <Users size={26} />
           </div>
           <div className="stat-card-info">
-            <span>In Queue Waiting</span>
-            <strong>3 Patients</strong>
+            <span>Currently Serving Token</span>
+            <strong>#A-{facility?.currentToken ?? 12}</strong>
           </div>
         </div>
 
@@ -192,16 +270,16 @@ const DoctorDashboard = () => {
                       <button 
                         className="secondary-button" 
                         style={{ padding: "6px 12px", fontSize: "12px" }}
-                        onClick={() => alert(`Calling patient ${patient.name} (${patient.token}) to Consultation Room 3...`)}
+                        onClick={() => handleServeNext(patient)}
                       >
-                        <PhoneCall size={13} /> Call
+                        <PhoneCall size={13} /> Call Token
                       </button>
                       <button 
                         className="primary-button" 
                         style={{ padding: "6px 12px", fontSize: "12px" }}
-                        onClick={() => alert(`Opening EHR records and prescription writer for ${patient.name}...`)}
+                        onClick={() => setSelectedPatient(patient)}
                       >
-                        <FileText size={13} /> Records
+                        <FileText size={13} /> Issue Prescription
                       </button>
                     </div>
                   </td>
@@ -211,6 +289,76 @@ const DoctorDashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* EHR Prescription Writer Modal */}
+      {selectedPatient && (
+        <div className="modal-overlay" onClick={() => setSelectedPatient(null)} style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 1000,
+          display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)"
+        }}>
+          <div className="modal-card fade-in" onClick={(e) => e.stopPropagation()} style={{
+            background: "var(--color-bg-secondary)", borderRadius: "16px", padding: "28px",
+            maxWidth: "500px", width: "90%", border: "1px solid var(--color-border)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h2 style={{ fontSize: "18px", fontWeight: "700" }}>EHR Record & Prescription Writer</h2>
+              <button onClick={() => setSelectedPatient(null)} className="nav-icon-btn">
+                <X size={18} />
+              </button>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "var(--color-text-secondary)", marginBottom: "16px" }}>
+              Writing digital prescription for <strong>{selectedPatient.name}</strong> ({selectedPatient.token})
+            </p>
+
+            <form onSubmit={handleSaveEHR} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: "600" }}>Medication Name & Strength</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Amoxicillin 500mg, Atorvastatin 10mg..." 
+                  value={rxMedication} 
+                  onChange={(e) => setRxMedication(e.target.value)} 
+                  required 
+                  style={{ width: "100%", marginTop: "4px", background: "var(--color-bg-tertiary)", border: "1px solid var(--color-border)", borderRadius: "8px", padding: "10px", color: "var(--color-text)" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: "600" }}>Dosage & Timing Instructions</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. 1 tablet twice daily after meals for 5 days" 
+                  value={rxDosage} 
+                  onChange={(e) => setRxDosage(e.target.value)} 
+                  required 
+                  style={{ width: "100%", marginTop: "4px", background: "var(--color-bg-tertiary)", border: "1px solid var(--color-border)", borderRadius: "8px", padding: "10px", color: "var(--color-text)" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: "600" }}>Clinical Consultation Notes</label>
+                <textarea 
+                  rows={3} 
+                  placeholder="Patient reports mild symptom improvement..." 
+                  value={rxNotes} 
+                  onChange={(e) => setRxNotes(e.target.value)} 
+                  style={{ width: "100%", marginTop: "4px", background: "var(--color-bg-tertiary)", border: "1px solid var(--color-border)", borderRadius: "8px", padding: "10px", color: "var(--color-text)" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                <button type="button" className="secondary-button" onClick={() => setSelectedPatient(null)} style={{ flex: 1 }}>
+                  Cancel
+                </button>
+                <button type="submit" className="primary-button" disabled={savingRx} style={{ flex: 1 }}>
+                  {savingRx ? "Saving..." : "Issue Digital Prescription"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

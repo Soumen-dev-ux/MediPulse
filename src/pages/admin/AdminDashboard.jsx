@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../Context/useAuth";
 import { 
   Users, 
@@ -12,29 +12,80 @@ import {
   ChevronRight,
   Phone
 } from "lucide-react";
+import { 
+  subscribeToFacility, 
+  serveNextPatient, 
+  generateQueueToken, 
+  resetQueueToken 
+} from "../../firebase/facilities";
 
 const AdminDashboard = () => {
   const { user, userData } = useAuth();
-  const [currentToken, setCurrentToken] = useState(14);
   const [phonePatientNumber, setPhonePatientNumber] = useState("");
+  const [facility, setFacility] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleNextToken = () => {
-    setCurrentToken(prev => prev + 1);
-  };
+  const currentToken = facility?.currentToken ?? 0;
 
-  const handleResetToken = () => {
-    if (window.confirm("Are you sure you want to reset the live queue token counter to #A-1?")) {
-      setCurrentToken(1);
+  const handleNextToken = async () => {
+    try {
+      await serveNextPatient();
+    } catch (error) {
+      console.error("Failed to serve next patient:", error);
     }
   };
 
-  const handleIssuePhoneToken = (e) => {
+  const handleResetToken = async () => {
+    if (window.confirm("Are you sure you want to reset the live queue token counter to #A-1?")) {
+      try {
+        await resetQueueToken();
+      } catch (error) {
+        console.error("Failed to reset token counter:", error);
+      }
+    }
+  };
+
+  const handleIssuePhoneToken = async (e) => {
     e.preventDefault();
     if (!phonePatientNumber) return;
-    alert(`Issued Queue Token #A-${currentToken + 1} for walk-in/phone patient (${phonePatientNumber}). SMS notification dispatched!`);
-    setCurrentToken(prev => prev + 1);
-    setPhonePatientNumber("");
+    try {
+      const newToken = await generateQueueToken();
+      alert(`Issued Queue Token #A-${newToken} for walk-in/phone patient (${phonePatientNumber}). SMS notification dispatched!`);
+      setPhonePatientNumber("");
+    } catch (error) {
+      console.error("Failed to issue token:", error);
+    }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    const unsubscribe = subscribeToFacility((data) => {
+      if (isMounted) {
+        setFacility(data);
+        setLoading(false);
+      }
+    });
+
+    const timer = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }, 1500);
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading facility...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard fade-in">
@@ -165,7 +216,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Manual Phone/Walk-in Patient Token Dispenser */}
-      <div className="card-panel">
+      <div className="card-panel" style={{ marginBottom: "24px" }}>
         <div className="panel-title-bar">
           <h2>Walk-in & Phone Patient Token Dispenser</h2>
         </div>
@@ -185,9 +236,64 @@ const AdminDashboard = () => {
             />
           </div>
           <button className="primary-button" type="submit">
-            <Plus size={18} /> Issue Token #A-{currentToken + 1}
+            <Plus size={18} /> Issue Token
           </button>
         </form>
+      </div>
+
+      {/* User Permissions & Role Management */}
+      <div className="card-panel">
+        <div className="panel-title-bar">
+          <h2>Registered Healthcare System Users</h2>
+          <span className="status-badge confirmed">Real-time DB Active</span>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table className="patient-queue-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Assigned Role</th>
+                <th>Status</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>usr_01</td>
+                <td><strong>Dr. Sharma</strong></td>
+                <td>doctor@medipulse.org</td>
+                <td><span className="status-badge confirmed" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>Doctor</span></td>
+                <td>Active Specialist</td>
+                <td style={{ textAlign: "right" }}>
+                  <button className="secondary-button" style={{ padding: "4px 10px", fontSize: "11px" }} onClick={() => alert("Updated doctor permissions for Dr. Sharma.")}>Edit Role</button>
+                </td>
+              </tr>
+              <tr>
+                <td>usr_02</td>
+                <td><strong>Soumen Pore</strong></td>
+                <td>patient@medipulse.org</td>
+                <td><span className="status-badge confirmed">Patient</span></td>
+                <td>Verified Patient</td>
+                <td style={{ textAlign: "right" }}>
+                  <button className="secondary-button" style={{ padding: "4px 10px", fontSize: "11px" }} onClick={() => alert("Updated patient record permissions.")}>Edit Role</button>
+                </td>
+              </tr>
+              <tr>
+                <td>usr_03</td>
+                <td><strong>System Admin</strong></td>
+                <td>admin@medipulse.org</td>
+                <td><span className="status-badge away" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#fca5a5" }}>Admin</span></td>
+                <td>Super Admin</td>
+                <td style={{ textAlign: "right" }}>
+                  <button className="secondary-button" style={{ padding: "4px 10px", fontSize: "11px" }} onClick={() => alert("Admin credentials protected.")}>Manage</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

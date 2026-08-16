@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Phone, Activity, ArrowRight } from "lucide-react";
-import { loginWithEmail, loginWithGoogle, sendPhoneOTP } from "../firebase/auth";
+import { Mail, Lock, Phone, Activity, ArrowRight, UserCheck, Stethoscope, ShieldCheck } from "lucide-react";
+import { loginWithEmail, loginWithGoogle, sendPhoneOTP, registerWithEmail } from "../firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase/config";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +16,40 @@ export default function Login() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleDemoLogin = async (role) => {
+    setError("");
+    setLoading(true);
+    const demoEmail = `${role}@medipulse.org`;
+    const demoPassword = "password123";
+
+    try {
+      // Try logging in
+      const user = await loginWithEmail(demoEmail, demoPassword);
+      // Ensure role matches in Firestore
+      await setDoc(doc(db, "users", user.uid), { role }, { merge: true });
+      navigate("/dashboard");
+    } catch (loginErr) {
+      // If demo user does not exist yet, automatically register it!
+      try {
+        const newUser = await registerWithEmail(demoEmail, demoPassword);
+        await setDoc(doc(db, "users", newUser.uid), {
+          name: `Demo ${role.charAt(0).toUpperCase() + role.slice(1)}`,
+          email: demoEmail,
+          phone: "+919876543210",
+          role: role,
+          authProvider: "demo",
+          createdAt: serverTimestamp(),
+        });
+        navigate("/dashboard");
+      } catch (regErr) {
+        console.error(regErr);
+        setError(`Unable to sign in as demo ${role}.`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -86,6 +122,42 @@ export default function Login() {
 
         <h1>Welcome back</h1>
         <p className="auth-subtitle">Access your personalized healthcare dashboard.</p>
+
+        {/* Demo Account Switcher */}
+        <div style={{ marginBottom: "20px", background: "var(--color-bg-tertiary)", padding: "12px", borderRadius: "12px" }}>
+          <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.5px", color: "var(--color-primary-light)", display: "block", marginBottom: "8px" }}>
+            FAST DEMO LOGIN (ONE-CLICK ACCESS)
+          </span>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px" }}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => handleDemoLogin("patient")}
+              disabled={loading}
+              style={{ padding: "6px 4px", fontSize: "11px" }}
+            >
+              <UserCheck size={13} /> Patient
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => handleDemoLogin("doctor")}
+              disabled={loading}
+              style={{ padding: "6px 4px", fontSize: "11px" }}
+            >
+              <Stethoscope size={13} /> Doctor
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => handleDemoLogin("admin")}
+              disabled={loading}
+              style={{ padding: "6px 4px", fontSize: "11px" }}
+            >
+              <ShieldCheck size={13} /> Admin
+            </button>
+          </div>
+        </div>
 
         <div className="auth-methods">
           <button

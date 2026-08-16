@@ -9,6 +9,13 @@ import About from "./pages/About";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
 import PatientDashboard from "./pages/patient/PatientDashboard";
+import FindHealthcare from "./pages/patient/FindHealthcare";
+import QueueTracker from "./pages/patient/QueueTracker";
+import Prescriptions from "./pages/patient/Prescriptions";
+
+import BookAppointmentModal from "./components/BookAppointmentModal";
+import AIHealthModal from "./components/AIHealthModal";
+import EmergencyModal from "./components/EmergencyModal";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRedirect from "./components/RoleRedirect";
@@ -20,8 +27,13 @@ function App() {
   const { userData } = useAuth();
   const role = userData?.role || "patient";
   const location = useLocation();
-  const isDashboardRoute = ["/patient", "/doctor", "/admin"].includes(location.pathname);
+  const isDashboardRoute = location.pathname.startsWith("/patient") || location.pathname.startsWith("/doctor") || location.pathname.startsWith("/admin");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Global Modals State
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isSOSModalOpen, setIsSOSModalOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -47,6 +59,9 @@ function App() {
             role={role} 
             isCollapsed={isSidebarCollapsed} 
             onCloseMobile={closeMobileSidebar} 
+            onOpenBookModal={() => setIsBookModalOpen(true)}
+            onOpenAIModal={() => setIsAIModalOpen(true)}
+            onOpenSOS={() => setIsSOSModalOpen(true)}
           />
           <div 
             className="sidebar-overlay" 
@@ -55,17 +70,45 @@ function App() {
           />
           <main className="main-content">
             <Routes>
-              {/* Patient */}
+              {/* Patient Routes */}
               <Route
                 path="/patient"
                 element={
                   <ProtectedRoute allowedRoles={["patient"]}>
-                    <PatientDashboard />
+                    <PatientDashboard 
+                      onOpenBookModal={() => setIsBookModalOpen(true)}
+                      onOpenAIModal={() => setIsAIModalOpen(true)}
+                      onOpenSOS={() => setIsSOSModalOpen(true)}
+                    />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/patient/healthcare"
+                element={
+                  <ProtectedRoute allowedRoles={["patient"]}>
+                    <FindHealthcare />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/patient/queue"
+                element={
+                  <ProtectedRoute allowedRoles={["patient"]}>
+                    <QueueTracker />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/patient/prescription"
+                element={
+                  <ProtectedRoute allowedRoles={["patient"]}>
+                    <Prescriptions />
                   </ProtectedRoute>
                 }
               />
 
-              {/* Doctor */}
+              {/* Doctor Routes */}
               <Route
                 path="/doctor"
                 element={
@@ -74,10 +117,42 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/doctor/schedule"
+                element={
+                  <ProtectedRoute allowedRoles={["doctor"]}>
+                    <DoctorDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/doctor/records"
+                element={
+                  <ProtectedRoute allowedRoles={["doctor"]}>
+                    <DoctorDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Admin */}
+              {/* Admin Routes */}
               <Route
                 path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/facilities"
                 element={
                   <ProtectedRoute allowedRoles={["admin"]}>
                     <AdminDashboard />
@@ -97,6 +172,21 @@ function App() {
           <Route path="/dashboard" element={<RoleRedirect />} />
         </Routes>
       )}
+
+      {/* Global Modals */}
+      <BookAppointmentModal 
+        isOpen={isBookModalOpen} 
+        onClose={() => setIsBookModalOpen(false)} 
+      />
+      <AIHealthModal 
+        isOpen={isAIModalOpen} 
+        onClose={() => setIsAIModalOpen(false)} 
+        onOpenSOS={() => setIsSOSModalOpen(true)}
+      />
+      <EmergencyModal 
+        isOpen={isSOSModalOpen} 
+        onClose={() => setIsSOSModalOpen(false)} 
+      />
     </div>
   );
 }

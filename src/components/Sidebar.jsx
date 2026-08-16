@@ -15,13 +15,12 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-export default function Sidebar({ role = "patient", isCollapsed, onCloseMobile }) {
+export default function Sidebar({ role = "patient", isCollapsed, onCloseMobile, onOpenSOS }) {
   const patientLinks = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/patient" },
-    { label: "Find Healthcare", icon: MapPin, path: "/patient" },
-    { label: "My Queue Status", icon: Clock, path: "/patient" },
-    { label: "Prescriptions", icon: Pill, path: "/patient" },
-    { label: "AI Health Assistant", icon: Bot, path: "/patient" },
+    { label: "Find Healthcare", icon: MapPin, path: "/patient/healthcare" },
+    { label: "My Queue Status", icon: Clock, path: "/patient/queue" },
+    { label: "Prescriptions", icon: Pill, path: "/patient/prescription" },
   ];
 
   const doctorLinks = [
@@ -84,7 +83,10 @@ export default function Sidebar({ role = "patient", isCollapsed, onCloseMobile }
               <button 
                 className="danger-button full" 
                 style={{ padding: "8px 12px", fontSize: "12px" }}
-                onClick={() => alert("Emergency SOS: Contacting nearest ambulance helpline 108...")}
+                onClick={() => {
+                  if (onCloseMobile) onCloseMobile();
+                  if (onOpenSOS) onOpenSOS();
+                }}
               >
                 <PhoneCall size={14} /> Call Emergency
               </button>
