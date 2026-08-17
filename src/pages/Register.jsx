@@ -42,7 +42,7 @@ export default function Register() {
             <div className="role-card-badge">Most Common</div>
             <h2 className="role-card-title">Patient</h2>
             <p className="role-card-desc">
-              Find nearby clinics, track live queues, book appointments, and access AI health assistance.
+              Find nearby clinics, track live queues and book appointments.
             </p>
             <ul className="role-card-features">
               <li><MapPin size={14} /> Real-time doctor availability</li>

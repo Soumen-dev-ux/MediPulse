@@ -17,7 +17,6 @@ import QueueTracker from "./pages/patient/QueueTracker";
 import Prescriptions from "./pages/patient/Prescriptions";
 
 import BookAppointmentModal from "./components/BookAppointmentModal";
-import AIHealthModal from "./components/AIHealthModal";
 import EmergencyModal from "./components/EmergencyModal";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,7 +34,6 @@ function App() {
 
   // Global Modals State
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isSOSModalOpen, setIsSOSModalOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -63,7 +61,6 @@ function App() {
             isCollapsed={isSidebarCollapsed} 
             onCloseMobile={closeMobileSidebar} 
             onOpenBookModal={() => setIsBookModalOpen(true)}
-            onOpenAIModal={() => setIsAIModalOpen(true)}
             onOpenSOS={() => setIsSOSModalOpen(true)}
           />
           <div 
@@ -80,7 +77,6 @@ function App() {
                   <ProtectedRoute allowedRoles={["patient"]}>
                     <PatientDashboard 
                       onOpenBookModal={() => setIsBookModalOpen(true)}
-                      onOpenAIModal={() => setIsAIModalOpen(true)}
                       onOpenSOS={() => setIsSOSModalOpen(true)}
                     />
                   </ProtectedRoute>
@@ -183,11 +179,6 @@ function App() {
       <BookAppointmentModal 
         isOpen={isBookModalOpen} 
         onClose={() => setIsBookModalOpen(false)} 
-      />
-      <AIHealthModal 
-        isOpen={isAIModalOpen} 
-        onClose={() => setIsAIModalOpen(false)} 
-        onOpenSOS={() => setIsSOSModalOpen(true)}
       />
       <EmergencyModal 
         isOpen={isSOSModalOpen} 

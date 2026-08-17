@@ -17,7 +17,7 @@ import {
   PlusCircle
 } from "lucide-react";
 
-const PatientDashboard = ({ onOpenBookModal, onOpenAIModal, onOpenSOS }) => {
+const PatientDashboard = ({ onOpenBookModal, onOpenSOS }) => {
   const { user, userData } = useAuth();
   const navigate = useNavigate();
   const isCancelled = localStorage.getItem("medipulse_token_cancelled") === "true";
@@ -191,15 +191,15 @@ const PatientDashboard = ({ onOpenBookModal, onOpenAIModal, onOpenSOS }) => {
           <div className="quick-actions-grid">
             <div 
               className="quick-action-card" 
-              onClick={onOpenAIModal}
+              onClick={() => navigate("/patient/prescription")}
               style={{ cursor: "pointer" }}
             >
               <div className="action-icon">
-                <Bot size={22} />
+                <FileText size={22} />
               </div>
               <div className="action-details">
-                <strong>AI Health Assistant</strong>
-                <span>Instant symptom guidance & advice</span>
+                <strong>View Prescriptions</strong>
+                <span>Access dosage & active refills</span>
               </div>
             </div>
 

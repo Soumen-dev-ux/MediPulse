@@ -12,7 +12,7 @@ import {
   Activity,
   MapPin,
   Clock,
-  Bot,
+  Stethoscope,
   Hospital,
   PhoneCall,
   Navigation,
@@ -151,7 +151,7 @@ export default function About() {
 
         <p>
           MediPulse connects patients, doctors, and healthcare facilities in real-time — eliminating uncertain hospital visits, 
-          streamlining queues, and providing instant AI health guidance.
+          streamlining queues, and providing instant health guidance.
         </p>
       </div>
 
@@ -199,11 +199,11 @@ export default function About() {
 
         <div className="about-card">
           <div className="stat-icon-wrapper" style={{ marginBottom: "16px" }}>
-            <Bot size={24} />
+            <PhoneCall size={24} />
           </div>
-          <h3>AI Health Assistant</h3>
+          <h3>24/7 Emergency Hotline</h3>
           <p>
-            Access 24/7 symptom guidance, triage recommendations, and direct emergency escalation for urgent health concerns.
+            One-click emergency SOS dispatch connecting patients with nearby hospital trauma centers and on-duty doctors.
           </p>
         </div>
       </div>

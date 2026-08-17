@@ -3,7 +3,7 @@ import {
   Activity,
   MapPin,
   Clock,
-  Bot,
+  FileText,
   ArrowRight,
   ShieldCheck,
   Users,
@@ -26,7 +26,7 @@ export default function Landing() {
 
         <p>
           Know whether your doctor is available before traveling, join queue lines remotely, 
-          find nearby clinics, and access AI health assistance — all from one unified platform.
+          find nearby clinics, and access digital prescriptions — all from one unified platform.
         </p>
 
         <div className="hero-buttons">
@@ -64,11 +64,11 @@ export default function Landing() {
 
           <div className="feature-card">
             <div className="stat-icon-wrapper" style={{ marginBottom: "16px" }}>
-              <Bot size={24} />
+              <FileText size={24} />
             </div>
-            <h3>AI Health Assistant</h3>
+            <h3>Digital Prescriptions</h3>
             <p>
-              Describe symptoms to receive instant preliminary guidance, triage advice, and emergency recommendations 24/7.
+              Access doctor digital prescriptions securely, view dosage instructions, and request pharmacy refills anytime.
             </p>
           </div>
         </div>
