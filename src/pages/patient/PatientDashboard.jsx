@@ -20,7 +20,9 @@ import {
 const PatientDashboard = ({ onOpenBookModal, onOpenAIModal, onOpenSOS }) => {
   const { user, userData } = useAuth();
   const navigate = useNavigate();
-  const [queueToken, setQueueToken] = useState("#A-14");
+  const isCancelled = localStorage.getItem("medipulse_token_cancelled") === "true";
+  const savedToken = localStorage.getItem("medipulse_user_token");
+  const queueToken = isCancelled ? "Cancelled" : savedToken ? `#A-${savedToken}` : "#A-14";
   const [estimatedWait, setEstimatedWait] = useState("18 mins");
 
   const formattedDate = new Date().toLocaleDateString("en-US", {
@@ -82,12 +84,12 @@ const PatientDashboard = ({ onOpenBookModal, onOpenAIModal, onOpenSOS }) => {
         </div>
 
         <div className="stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/patient/queue")}>
-          <div className="stat-icon-wrapper" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
+          <div className="stat-icon-wrapper" style={{ background: isCancelled ? "rgba(239, 68, 68, 0.15)" : "rgba(59, 130, 246, 0.15)", color: isCancelled ? "#fca5a5" : "#60a5fa" }}>
             <Activity size={26} />
           </div>
           <div className="stat-card-info">
             <span>Queue Status</span>
-            <strong>Active (#A-14)</strong>
+            <strong>{isCancelled ? "Cancelled" : `Active (${queueToken})`}</strong>
           </div>
         </div>
       </div>
