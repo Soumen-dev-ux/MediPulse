@@ -5,6 +5,9 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import About from "./pages/About";
+import PatientRegister from "./pages/patient/PatientRegister";
+import DoctorRegister from "./pages/doctor/DoctorRegister";
+import ClinicRegister from "./pages/admin/ClinicRegister";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
@@ -168,6 +171,9 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/register/patient" element={<PatientRegister />} />
+          <Route path="/register/doctor" element={<DoctorRegister />} />
+          <Route path="/register/clinic" element={<ClinicRegister />} />
           <Route path="/about" element={<About />} />
           <Route path="/dashboard" element={<RoleRedirect />} />
         </Routes>

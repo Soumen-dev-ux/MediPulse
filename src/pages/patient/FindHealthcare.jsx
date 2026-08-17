@@ -17,6 +17,7 @@ import {
   Clock, 
   PhoneCall, 
   Star, 
+  Truck,
   UserCheck, 
   PlusCircle 
 } from "lucide-react";
@@ -116,6 +117,8 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: `#A-${facility?.currentToken || 12}`,
       phone: "+91 98765 43210",
       openHours: "Open 24/7",
+      hasPharmacy: true,
+      deliveryEnabled: false,
     },
     {
       id: "hosp-2",
@@ -131,6 +134,8 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: "#B-08",
       phone: "+91 98300 11223",
       openHours: "Open 24/7",
+      hasPharmacy: false,
+      deliveryEnabled: false,
     },
     {
       id: "pharm-1",
@@ -146,6 +151,9 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: "In Stock",
       phone: "+91 98111 22334",
       openHours: "24 Hours Open",
+      hasPharmacy: true,
+      deliveryEnabled: true,
+      freeDeliveryRadius: 3,
     },
     {
       id: "pharm-2",
@@ -161,6 +169,9 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: "In Stock",
       phone: "+91 98222 33445",
       openHours: "7:00 AM - 11:00 PM",
+      hasPharmacy: true,
+      deliveryEnabled: true,
+      freeDeliveryRadius: 2,
     },
     {
       id: "nursing-1",
@@ -176,6 +187,8 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: "#C-03",
       phone: "+91 98555 66778",
       openHours: "Visiting Hrs: 10 AM - 7 PM",
+      hasPharmacy: true,
+      deliveryEnabled: false,
     },
     {
       id: "nursing-2",
@@ -191,16 +204,31 @@ export default function FindHealthcare({ onOpenBookModal }) {
       currentToken: "#D-05",
       phone: "+91 98999 55443",
       openHours: "24/7 Admission Active",
+      hasPharmacy: false,
+      deliveryEnabled: false,
     },
   ];
 
   const filteredNodes = healthcareNodes.filter((item) => {
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.typeLabel.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" ||
+      item.category === selectedCategory ||
+      (selectedCategory === "with_pharmacy" && item.hasPharmacy);
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.typeLabel.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const handleCallFacility = (item) => {
+    window.open(`tel:${item.phone.replace(/\s/g, "")}`, "_self");
+  };
+
+  const handleGetDirections = (item) => {
+    const query = encodeURIComponent(`${item.name}, ${item.address}`);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+  };
 
   const handleJoinQueue = async (node) => {
     try {
@@ -263,6 +291,13 @@ export default function FindHealthcare({ onOpenBookModal }) {
               onClick={() => setSelectedCategory("nursing_home")}
             >
               <HeartPulse size={14} /> Nursing Homes
+            </button>
+            <button
+              className={`status-toggle-btn ${selectedCategory === "with_pharmacy" ? "active" : ""}`}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              onClick={() => setSelectedCategory("with_pharmacy")}
+            >
+              <Pill size={14} /> With Pharmacy
             </button>
           </div>
 
@@ -351,7 +386,15 @@ export default function FindHealthcare({ onOpenBookModal }) {
                         {item.category !== "pharmacy" && <div><strong>Serving Token:</strong> {item.currentToken}</div>}
                       </div>
 
-                      <div style={{ display: "flex", gap: "6px" }}>
+                      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                        {item.hasPharmacy && (
+                          <span style={{ fontSize: "10px", background: "rgba(16,185,129,0.15)", color: "#10b981", padding: "2px 6px", borderRadius: "6px", fontWeight: "700" }}>💊 Pharmacy</span>
+                        )}
+                        {item.deliveryEnabled && (
+                          <span style={{ fontSize: "10px", background: "rgba(59,130,246,0.15)", color: "#60a5fa", padding: "2px 6px", borderRadius: "6px", fontWeight: "700" }}>🚚 Delivery</span>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "4px" }}>
                         {item.category !== "pharmacy" && (
                           <button 
                             className="primary-button" 
@@ -361,12 +404,20 @@ export default function FindHealthcare({ onOpenBookModal }) {
                             Join Queue
                           </button>
                         )}
-                        <button 
+                        <a 
+                          href={`tel:${item.phone.replace(/\s/g, "")}`}
                           className="secondary-button" 
-                          style={{ padding: "4px 8px", fontSize: "11px" }}
-                          onClick={() => alert(`Calling ${item.name} (${item.phone})...`)}
+                          style={{ padding: "4px 8px", fontSize: "11px", textDecoration: "none" }}
                         >
                           <PhoneCall size={12} /> Call
+                        </a>
+                        <button
+                          className="secondary-button"
+                          style={{ padding: "4px 8px", fontSize: "11px" }}
+                          onClick={() => handleGetDirections(item)}
+                          title="Open in Google Maps"
+                        >
+                          <Navigation size={12} /> Directions
                         </button>
                       </div>
                     </div>
@@ -405,6 +456,22 @@ export default function FindHealthcare({ onOpenBookModal }) {
                     </span>
                   </div>
 
+                  {/* Pharmacy & Delivery Badges */}
+                  {(item.hasPharmacy || item.deliveryEnabled) && (
+                    <div style={{ display: "flex", gap: "6px", marginBottom: "10px", flexWrap: "wrap" }}>
+                      {item.hasPharmacy && (
+                        <span className="facility-badge facility-badge-pharmacy">
+                          <Pill size={11} /> Pharmacy
+                        </span>
+                      )}
+                      {item.deliveryEnabled && (
+                        <span className="facility-badge facility-badge-delivery">
+                          <Truck size={11} /> Delivery {item.freeDeliveryRadius && `(${item.freeDeliveryRadius}km free)`}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   <p style={{ fontSize: "13px", color: "var(--color-text-secondary)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
                     <MapPin size={14} /> {item.address} · <strong style={{ color: "var(--color-primary-light)" }}>{distanceText} away</strong>
                   </p>
@@ -423,22 +490,30 @@ export default function FindHealthcare({ onOpenBookModal }) {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                <div style={{ display: "flex", gap: "8px", marginTop: "8px", flexWrap: "wrap" }}>
                   {item.category !== "pharmacy" && (
                     <button 
                       className="primary-button" 
-                      style={{ flex: 1 }}
+                      style={{ flex: 1, minWidth: "120px" }}
                       onClick={() => handleJoinQueue(item)}
                     >
                       <Clock size={15} /> Join Queue ({item.currentToken})
                     </button>
                   )}
-                  <button 
+                  <a
+                    href={`tel:${item.phone.replace(/\s/g, "")}`}
                     className="secondary-button"
-                    onClick={() => alert(`Calling ${item.name} (${item.phone})...`)}
-                    title="Call Facility"
+                    style={{ textDecoration: "none" }}
+                    title={`Call ${item.phone}`}
                   >
                     <PhoneCall size={15} /> Call
+                  </a>
+                  <button
+                    className="secondary-button"
+                    onClick={() => handleGetDirections(item)}
+                    title="Get Directions in Google Maps"
+                  >
+                    <Navigation size={15} /> Directions
                   </button>
                 </div>
               </div>
