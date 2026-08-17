@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import About from "./pages/About";
 import PatientRegister from "./pages/patient/PatientRegister";
-import DoctorRegister from "./pages/doctor/DoctorRegister";
+import DoctorRegister from "./pages/Doctor/DoctorRegister";
 import ClinicRegister from "./pages/admin/ClinicRegister";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
