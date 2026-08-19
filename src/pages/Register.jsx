@@ -14,20 +14,20 @@ import {
 
 export default function Register() {
   return (
-    <div className="auth-page fade-in" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
-      <div style={{ width: "100%", maxWidth: "900px" }}>
+    <div className="registration-page registration-page--chooser fade-in">
+      <div className="registration-shell">
         {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: "48px" }}>
-          <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "10px", color: "var(--color-primary-light)", fontSize: "26px", fontWeight: "800", letterSpacing: "-0.5px", textDecoration: "none" }}>
+        <div className="registration-hero">
+          <Link to="/" className="registration-brand">
             <div className="logo-icon-wrapper">
               <Activity size={22} />
             </div>
             MediPulse
           </Link>
-          <h1 style={{ fontSize: "32px", fontWeight: "800", color: "var(--color-text-primary)", marginTop: "20px", letterSpacing: "-0.5px" }}>
+          <h1>
             Join MediPulse
           </h1>
-          <p style={{ color: "var(--color-text-secondary)", fontSize: "16px", marginTop: "10px" }}>
+          <p>
             Choose your role to get started with the right registration flow.
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function Register() {
           </Link>
         </div>
 
-        <p style={{ textAlign: "center", marginTop: "32px", color: "var(--color-text-secondary)", fontSize: "14px" }}>
+        <p className="registration-signin">
           Already have an account?{" "}
           <Link to="/login" style={{ color: "var(--color-primary-light)", fontWeight: "600" }}>
             Sign In

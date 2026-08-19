@@ -69,17 +69,17 @@ export default function PatientRegister() {
   };
 
   return (
-    <div className="auth-page fade-in">
-      <div className="auth-card" style={{ maxWidth: "480px" }}>
+    <div className="registration-page registration-page--patient fade-in">
+      <div className="auth-card registration-card registration-card--patient">
         {/* Header */}
         <Link to="/" className="auth-logo">
           <Activity size={24} />
           MediPulse
         </Link>
 
-        <div style={{ marginBottom: "8px" }}>
+        <div className="registration-heading">
           <span className="reg-eyebrow">PATIENT REGISTRATION</span>
-          <h1 style={{ fontSize: "26px", fontWeight: "800", marginTop: "6px" }}>
+          <h1>
             Create your patient account
           </h1>
           <p className="auth-subtitle">

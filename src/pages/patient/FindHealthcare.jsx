@@ -263,38 +263,38 @@ export default function FindHealthcare({ onOpenBookModal }) {
       <div className="card-panel" style={{ marginBottom: "20px" }}>
         <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
           {/* Category Tabs */}
-          <div style={{ display: "flex", gap: "8px", overflowX: "auto" }}>
+          <div style={{ display: "flex", gap: "8px", overflowX: "auto", width: "100%", maxWidth: "100%", paddingBottom: "4px" }}>
             <button
               className={`status-toggle-btn ${selectedCategory === "all" ? "active" : ""}`}
-              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
               onClick={() => setSelectedCategory("all")}
             >
               All Facilities ({healthcareNodes.length})
             </button>
             <button
               className={`status-toggle-btn ${selectedCategory === "hospital" ? "active" : ""}`}
-              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
               onClick={() => setSelectedCategory("hospital")}
             >
               <Hospital size={14} /> Hospitals
             </button>
             <button
               className={`status-toggle-btn ${selectedCategory === "pharmacy" ? "active" : ""}`}
-              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
               onClick={() => setSelectedCategory("pharmacy")}
             >
               <Pill size={14} /> Medical Shops
             </button>
             <button
               className={`status-toggle-btn ${selectedCategory === "nursing_home" ? "active" : ""}`}
-              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
               onClick={() => setSelectedCategory("nursing_home")}
             >
               <HeartPulse size={14} /> Nursing Homes
             </button>
             <button
               className={`status-toggle-btn ${selectedCategory === "with_pharmacy" ? "active" : ""}`}
-              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ fontSize: "12px", padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
               onClick={() => setSelectedCategory("with_pharmacy")}
             >
               <Pill size={14} /> With Pharmacy
@@ -302,7 +302,7 @@ export default function FindHealthcare({ onOpenBookModal }) {
           </div>
 
           {/* Search Box */}
-          <div className="nav-center-search" style={{ width: "280px" }}>
+          <div className="input-wrapper" style={{ flex: 1, minWidth: "240px" }}>
             <Search size={16} className="text-muted" />
             <input 
               type="text" 
@@ -316,7 +316,7 @@ export default function FindHealthcare({ onOpenBookModal }) {
 
       {/* Main Interactive Map Section */}
       <div className="card-panel" style={{ padding: "0", overflow: "hidden", borderRadius: "16px", marginBottom: "24px" }}>
-        <div style={{ height: "480px", width: "100%", position: "relative" }}>
+        <div className="map-responsive-container">
           <MapContainer
             center={userLocation}
             zoom={14}

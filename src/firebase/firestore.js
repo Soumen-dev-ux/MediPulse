@@ -8,11 +8,15 @@ import {
   where,
   serverTimestamp,
   updateDoc,
+  deleteDoc,
+  onSnapshot,
+  addDoc,
+  orderBy
 } from "firebase/firestore";
 import { db } from "./config";
 
 // ================================
-// USER ROLE UTILITIES
+// USER ROLE & ADMIN MANAGEMENT
 // ================================
 
 export const updateUserRole = async (uid, role, extraData = {}) => {
@@ -23,8 +27,40 @@ export const updateUserRole = async (uid, role, extraData = {}) => {
   });
 };
 
+export const updateUserStatus = async (uid, status) => {
+  await updateDoc(doc(db, "users", uid), {
+    status,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+export const subscribeAllUsers = (callback) => {
+  try {
+    const usersRef = collection(db, "users");
+    return onSnapshot(
+      usersRef,
+      (snapshot) => {
+        const users = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(users);
+      },
+      (error) => {
+        console.error("Error subscribing to users:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeAllUsers failed:", err);
+    callback([]);
+    return () => {};
+  }
+};
+
+export const deleteUserRecord = async (uid) => {
+  await deleteDoc(doc(db, "users", uid));
+};
+
 // ================================
-// DOCTOR MANAGEMENT
+// DOCTOR MANAGEMENT & VERIFICATION
 // ================================
 
 export const registerDoctor = async (uid, data) => {
@@ -54,6 +90,36 @@ export const getPublicDoctors = async () => {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 };
 
+export const subscribeAllDoctors = (callback) => {
+  try {
+    const doctorsRef = collection(db, "doctors");
+    return onSnapshot(
+      doctorsRef,
+      (snapshot) => {
+        const docsList = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(docsList);
+      },
+      (error) => {
+        console.error("Error subscribing to doctors:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeAllDoctors failed:", err);
+    callback([]);
+    return () => {};
+  }
+};
+
+export const verifyDoctorProfile = async (uid, verificationStatus, adminNotes = "") => {
+  const docRef = doc(db, "doctors", uid);
+  await updateDoc(docRef, {
+    verificationStatus,
+    adminNotes,
+    updatedAt: serverTimestamp(),
+  });
+};
+
 // ================================
 // CLINIC / FACILITY MANAGEMENT
 // ================================
@@ -63,6 +129,7 @@ export const registerClinic = async (uid, data) => {
     ...data,
     isPublic: true,
     verificationStatus: "pending",
+    status: "Operational",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -99,6 +166,35 @@ export const getClinicsWithDelivery = async () => {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 };
 
+export const subscribeAllFacilities = (callback) => {
+  try {
+    const facilitiesRef = collection(db, "facilities");
+    return onSnapshot(
+      facilitiesRef,
+      (snapshot) => {
+        const facilitiesList = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(facilitiesList);
+      },
+      (error) => {
+        console.error("Error subscribing to facilities:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeAllFacilities failed:", err);
+    callback([]);
+    return () => {};
+  }
+};
+
+export const updateFacilityDetails = async (facilityId, updates) => {
+  const facRef = doc(db, "facilities", facilityId);
+  await updateDoc(facRef, {
+    ...updates,
+    updatedAt: serverTimestamp(),
+  });
+};
+
 // ================================
 // PATIENT MANAGEMENT
 // ================================
@@ -118,11 +214,50 @@ export const getPatientProfile = async (uid) => {
 };
 
 export const getPrivatePatientProfile = async (uid, requestorUid, requestorRole) => {
-  // Only the patient themselves, assigned doctors, or admins can view
   if (requestorUid !== uid && requestorRole !== "doctor" && requestorRole !== "admin") {
     throw new Error("Access denied: insufficient permissions.");
   }
   return getPatientProfile(uid);
+};
+
+// ================================
+// AUDIT LOGGING SERVICE
+// ================================
+
+export const addAuditLog = async (action, details, performedBy = "Admin") => {
+  try {
+    const logsRef = collection(db, "audit_logs");
+    await addDoc(logsRef, {
+      action,
+      details,
+      performedBy,
+      timestamp: new Date().toLocaleString(),
+      createdAt: serverTimestamp(),
+    });
+  } catch (err) {
+    console.warn("Audit log save failed, logging locally:", err);
+  }
+};
+
+export const subscribeAuditLogs = (callback) => {
+  try {
+    const logsRef = collection(db, "audit_logs");
+    return onSnapshot(
+      logsRef,
+      (snapshot) => {
+        const logs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(logs);
+      },
+      (error) => {
+        console.error("Error subscribing to audit logs:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeAuditLogs failed:", err);
+    callback([]);
+    return () => {};
+  }
 };
 
 // ================================
@@ -151,3 +286,4 @@ export const sortByDistance = (items, userLat, userLng) => {
     return distA - distB;
   });
 };
+

@@ -84,7 +84,7 @@ export default function Prescriptions() {
                     <strong>Instructions:</strong> {rx.instructions}
                   </p>
 
-                  <div style={{ display: "flex", gap: "16px", fontSize: "12px", color: "var(--color-text-secondary)", marginTop: "8px" }}>
+                  <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", fontSize: "12px", color: "var(--color-text-secondary)", marginTop: "8px" }}>
                     <span><Stethoscope size={13} style={{ display: "inline", verticalAlign: "middle" }} /> Issued by {rx.doctorName || "Dr. Sharma"}</span>
                     <span><Clock size={13} style={{ display: "inline", verticalAlign: "middle" }} /> {rx.remainingDays || "Active dosage"}</span>
                     <span>Issued Date: {rx.dateIssued || "Aug 2026"}</span>
@@ -92,15 +92,17 @@ export default function Prescriptions() {
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", width: "100%", justifyContent: "flex-end" }}>
                 <button 
                   className="secondary-button"
+                  style={{ flex: 1, minWidth: "140px" }}
                   onClick={() => handleDownloadPDF(rx)}
                 >
                   <Download size={15} /> Download PDF
                 </button>
                 <button 
                   className="primary-button"
+                  style={{ flex: 1, minWidth: "140px" }}
                   onClick={() => handleRefill(rx)}
                   disabled={rx.refillStatus === "requested"}
                 >

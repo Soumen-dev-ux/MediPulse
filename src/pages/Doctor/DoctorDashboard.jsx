@@ -212,9 +212,9 @@ const DoctorDashboard = () => {
       <div className="card-panel">
         <div className="panel-title-bar" style={{ flexWrap: "wrap", gap: "16px" }}>
           <h2>Today's Patient Schedule</h2>
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <div className="nav-center-search" style={{ width: "240px" }}>
-              <Search size={15} />
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            <div className="input-wrapper" style={{ width: "220px" }}>
+              <Search size={15} className="text-muted" />
               <input 
                 type="text" 
                 placeholder="Search patient name..." 
@@ -222,12 +222,12 @@ const DoctorDashboard = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div style={{ display: "flex", gap: "6px" }}>
+            <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "2px" }}>
               {["all", "next", "waiting", "completed"].map((tab) => (
                 <button
                   key={tab}
                   className={`status-toggle-btn ${activeTab === tab ? "active" : ""}`}
-                  style={{ textTransform: "capitalize", padding: "6px 12px", fontSize: "12px" }}
+                  style={{ textTransform: "capitalize", padding: "6px 12px", fontSize: "12px", whiteSpace: "nowrap" }}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -237,7 +237,7 @@ const DoctorDashboard = () => {
           </div>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
+        <div className="table-responsive-wrapper">
           <table className="patient-queue-table">
             <thead>
               <tr>
@@ -292,13 +292,10 @@ const DoctorDashboard = () => {
 
       {/* EHR Prescription Writer Modal */}
       {selectedPatient && (
-        <div className="modal-overlay" onClick={() => setSelectedPatient(null)} style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 1000,
-          display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)"
-        }}>
+        <div className="modal-overlay" onClick={() => setSelectedPatient(null)}>
           <div className="modal-card fade-in" onClick={(e) => e.stopPropagation()} style={{
-            background: "var(--color-bg-secondary)", borderRadius: "16px", padding: "28px",
-            maxWidth: "500px", width: "90%", border: "1px solid var(--color-border)"
+            background: "var(--color-bg-surface)", borderRadius: "16px", padding: "28px",
+            maxWidth: "500px", border: "1px solid var(--color-border)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <h2 style={{ fontSize: "18px", fontWeight: "700" }}>EHR Record & Prescription Writer</h2>

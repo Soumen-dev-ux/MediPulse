@@ -143,6 +143,7 @@ const PatientDashboard = ({ onOpenBookModal, onOpenSOS }) => {
               </button>
               <button 
                 className="secondary-button"
+                style={{ flex: 1, minWidth: "140px" }}
                 onClick={onOpenBookModal}
               >
                 Reschedule Slot

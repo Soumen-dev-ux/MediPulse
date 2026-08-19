@@ -137,8 +137,8 @@ export default function ClinicRegister() {
   };
 
   return (
-    <div className="auth-page fade-in" style={{ padding: "40px 20px" }}>
-      <div className="auth-card" style={{ maxWidth: "580px" }}>
+    <div className="registration-page registration-page--clinic fade-in">
+      <div className="auth-card registration-card registration-card--clinic">
         {/* Logo */}
         <Link to="/" className="auth-logo">
           <Activity size={24} />
@@ -161,9 +161,9 @@ export default function ClinicRegister() {
         </div>
 
         {/* Heading */}
-        <div style={{ marginBottom: "8px" }}>
+        <div className="registration-heading">
           <span className="reg-eyebrow">CLINIC / NURSING HOME REGISTRATION · STEP {step} OF {TOTAL_STEPS}</span>
-          <h1 style={{ fontSize: "24px", fontWeight: "800", marginTop: "6px" }}>
+          <h1>
             {step === 1 && "Basic Information"}
             {step === 2 && "Regulatory Details & Pharmacy Setup"}
             {step === 3 && "Review & Confirm"}

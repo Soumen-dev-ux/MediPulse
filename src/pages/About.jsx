@@ -279,7 +279,7 @@ export default function About() {
           </div>
 
           {/* Search Box */}
-          <div className="nav-center-search" style={{ width: "240px" }}>
+          <div className="input-wrapper" style={{ width: "240px", flex: 1, minWidth: "200px" }}>
             <Search size={15} className="text-muted" />
             <input
               type="text"
@@ -292,7 +292,7 @@ export default function About() {
 
         {/* View Viewport: Interactive Leaflet Map OR Radar Grid */}
         {viewMode === "map" ? (
-          <div className="about-leaflet-viewport" style={{ height: "420px", width: "100%", borderRadius: "18px", overflow: "hidden", border: "1px solid var(--color-border)", position: "relative" }}>
+          <div className="map-responsive-container" style={{ borderRadius: "18px", overflow: "hidden", border: "1px solid var(--color-border)" }}>
             <MapContainer
               center={mapCenter}
               zoom={13}
@@ -436,10 +436,10 @@ export default function About() {
               <span style={{ fontSize: "11px", color: "var(--color-text-muted)", display: "block", textTransform: "uppercase", fontWeight: "700" }}>Est. Wait Time</span>
               <strong style={{ fontSize: "18px", color: "var(--color-info)" }}>{currentHospital.avgWait}</strong>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 className="secondary-button"
-                style={{ padding: "8px 14px", fontSize: "12px" }}
+                style={{ padding: "8px 14px", fontSize: "12px", flex: 1 }}
                 onClick={() => handleGetDirections(currentHospital)}
               >
                 <Navigation size={14} /> Directions
@@ -447,7 +447,7 @@ export default function About() {
               <Link
                 to="/patient/healthcare"
                 className="primary-button"
-                style={{ padding: "8px 14px", fontSize: "12px", textDecoration: "none" }}
+                style={{ padding: "8px 14px", fontSize: "12px", textDecoration: "none", flex: 1, justifyContent: "center" }}
               >
                 Find & Book
               </Link>
@@ -469,11 +469,11 @@ export default function About() {
         <p style={{ color: "var(--color-text-secondary)", maxWidth: "550px", margin: "10px auto 24px" }}>
           Join thousands of patients and healthcare providers managing appointments and queues seamlessly with MediPulse.
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: "14px" }}>
-          <Link to="/register" className="primary-button">
+        <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
+          <Link to="/register" className="primary-button" style={{ minWidth: "160px" }}>
             Get Started Free <ArrowRight size={18} />
           </Link>
-          <Link to="/login" className="secondary-button">
+          <Link to="/login" className="secondary-button" style={{ minWidth: "160px" }}>
             Sign In to Account
           </Link>
         </div>

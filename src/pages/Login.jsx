@@ -128,13 +128,13 @@ export default function Login() {
           <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.5px", color: "var(--color-primary-light)", display: "block", marginBottom: "8px" }}>
             FAST DEMO LOGIN (ONE-CLICK ACCESS)
           </span>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px" }}>
+          <div className="demo-login-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(80px, 1fr))", gap: "6px" }}>
             <button
               type="button"
               className="secondary-button"
               onClick={() => handleDemoLogin("patient")}
               disabled={loading}
-              style={{ padding: "6px 4px", fontSize: "11px" }}
+              style={{ padding: "6px 4px", fontSize: "11px", justifyContent: "center" }}
             >
               <UserCheck size={13} /> Patient
             </button>
@@ -143,7 +143,7 @@ export default function Login() {
               className="secondary-button"
               onClick={() => handleDemoLogin("doctor")}
               disabled={loading}
-              style={{ padding: "6px 4px", fontSize: "11px" }}
+              style={{ padding: "6px 4px", fontSize: "11px", justifyContent: "center" }}
             >
               <Stethoscope size={13} /> Doctor
             </button>
@@ -152,7 +152,7 @@ export default function Login() {
               className="secondary-button"
               onClick={() => handleDemoLogin("admin")}
               disabled={loading}
-              style={{ padding: "6px 4px", fontSize: "11px" }}
+              style={{ padding: "6px 4px", fontSize: "11px", justifyContent: "center" }}
             >
               <ShieldCheck size={13} /> Admin
             </button>

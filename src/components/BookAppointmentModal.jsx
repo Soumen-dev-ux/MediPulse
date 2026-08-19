@@ -46,13 +46,10 @@ export default function BookAppointmentModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 1000,
-      display: "flex", alignItems: "center", justifyCenter: "center", backdropFilter: "blur(4px)"
-    }}>
+    <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card fade-in" onClick={(e) => e.stopPropagation()} style={{
-        background: "var(--color-bg-secondary)", borderRadius: "16px", padding: "28px",
-        maxWidth: "500px", width: "90%", border: "1px solid var(--color-border)", boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
+        background: "var(--color-bg-surface)", borderRadius: "16px", padding: "28px",
+        maxWidth: "500px", border: "1px solid var(--color-border)", boxShadow: "var(--shadow-lg)"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -71,7 +68,7 @@ export default function BookAppointmentModal({ isOpen, onClose }) {
             <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--color-text-secondary)" }}>Specialty Department</label>
             <div className="input-wrapper" style={{ marginTop: "4px" }}>
               <Hospital size={18} />
-              <select value={department} onChange={(e) => setDepartment(e.target.value)} style={{ background: "transparent", border: "none", color: "var(--color-text)", width: "100%", outline: "none" }}>
+              <select value={department} onChange={(e) => setDepartment(e.target.value)} style={{ background: "transparent", border: "none", color: "var(--color-text-primary)", width: "100%", outline: "none" }}>
                 <option value="Cardiology">Cardiology & Vascular</option>
                 <option value="Orthopedics">Orthopedics & Bone</option>
                 <option value="General Medicine">General Internal Medicine</option>
@@ -85,7 +82,7 @@ export default function BookAppointmentModal({ isOpen, onClose }) {
             <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--color-text-secondary)" }}>Select Specialist Doctor</label>
             <div className="input-wrapper" style={{ marginTop: "4px" }}>
               <Stethoscope size={18} />
-              <select value={doctor} onChange={(e) => setDoctor(e.target.value)} style={{ background: "transparent", border: "none", color: "var(--color-text)", width: "100%", outline: "none" }}>
+              <select value={doctor} onChange={(e) => setDoctor(e.target.value)} style={{ background: "transparent", border: "none", color: "var(--color-text-primary)", width: "100%", outline: "none" }}>
                 <option value="Dr. Sharma">Dr. Sharma (Senior Cardiologist)</option>
                 <option value="Dr. Ananya Roy">Dr. Ananya Roy (Orthopedic Specialist)</option>
                 <option value="Dr. Soumen Pore">Dr. Soumen Pore (General Physician)</option>
@@ -93,7 +90,7 @@ export default function BookAppointmentModal({ isOpen, onClose }) {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+          <div className="form-row-2">
             <div>
               <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--color-text-secondary)" }}>Preferred Date</label>
               <div className="input-wrapper" style={{ marginTop: "4px" }}>

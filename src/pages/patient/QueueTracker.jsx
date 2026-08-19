@@ -198,12 +198,14 @@ export default function QueueTracker() {
             <div style={{ display: "flex", gap: "12px", marginTop: "24px", flexWrap: "wrap" }}>
               <button 
                 className="primary-button"
+                style={{ flex: 1, minWidth: "160px" }}
                 onClick={() => alert(`Showing map navigation to City Central Hospital Room 302...`)}
               >
                 <MapPin size={16} /> Navigate to Room 302
               </button>
               <button 
                 className="secondary-button"
+                style={{ flex: 1, minWidth: "140px" }}
                 onClick={() => alert("Contacting clinic reception desk at +91 98765 43210...")}
               >
                 <PhoneCall size={16} /> Contact Desk
@@ -211,7 +213,7 @@ export default function QueueTracker() {
               <button 
                 className="danger-button"
                 onClick={handleCancelToken}
-                style={{ marginLeft: "auto" }}
+                style={{ flex: 1, minWidth: "140px" }}
               >
                 <XCircle size={16} /> Cancel Token
               </button>

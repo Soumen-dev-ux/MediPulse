@@ -107,8 +107,8 @@ export default function DoctorRegister() {
   };
 
   return (
-    <div className="auth-page fade-in" style={{ padding: "40px 20px" }}>
-      <div className="auth-card" style={{ maxWidth: "560px" }}>
+    <div className="registration-page registration-page--doctor fade-in">
+      <div className="auth-card registration-card registration-card--doctor">
         {/* Logo */}
         <Link to="/" className="auth-logo">
           <Activity size={24} />
@@ -131,9 +131,9 @@ export default function DoctorRegister() {
         </div>
 
         {/* Heading */}
-        <div style={{ marginBottom: "8px" }}>
+        <div className="registration-heading">
           <span className="reg-eyebrow">DOCTOR REGISTRATION · STEP {step} OF {TOTAL_STEPS}</span>
-          <h1 style={{ fontSize: "24px", fontWeight: "800", marginTop: "6px" }}>
+          <h1>
             {step === 1 && "Basic Information"}
             {step === 2 && "Professional Credentials"}
             {step === 3 && "Experience & Consultation Fee"}

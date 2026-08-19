@@ -30,43 +30,55 @@ export const subscribeUserAppointments = (userId, callback) => {
     callback([]);
     return () => {};
   }
-  const q = query(
-    appointmentsRef,
-    where("userId", "==", userId)
-  );
+  try {
+    const q = query(
+      appointmentsRef,
+      where("userId", "==", userId)
+    );
 
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const appointments = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      callback(appointments);
-    },
-    (error) => {
-      console.error("Error subscribing to appointments:", error);
-      callback([]);
-    }
-  );
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const appointments = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        callback(appointments);
+      },
+      (error) => {
+        console.error("Error subscribing to appointments:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeUserAppointments failed:", err);
+    callback([]);
+    return () => {};
+  }
 };
 
 // Listen to all appointments for doctors/admins
 export const subscribeAllAppointments = (callback) => {
-  return onSnapshot(
-    appointmentsRef,
-    (snapshot) => {
-      const appointments = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      callback(appointments);
-    },
-    (error) => {
-      console.error("Error subscribing to all appointments:", error);
-      callback([]);
-    }
-  );
+  try {
+    return onSnapshot(
+      appointmentsRef,
+      (snapshot) => {
+        const appointments = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        callback(appointments);
+      },
+      (error) => {
+        console.error("Error subscribing to all appointments:", error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.error("subscribeAllAppointments failed:", err);
+    callback([]);
+    return () => {};
+  }
 };
 
 // Cancel an appointment

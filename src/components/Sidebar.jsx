@@ -11,7 +11,9 @@ import {
   Calendar,
   PhoneCall,
   Activity,
-  HeartPulse
+  HeartPulse,
+  Stethoscope,
+  X
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -30,15 +32,32 @@ export default function Sidebar({ role = "patient", isCollapsed, onCloseMobile, 
   ];
 
   const adminLinks = [
-    { label: "Admin Console", icon: LayoutDashboard, path: "/admin" },
-    { label: "Users Overview", icon: Users, path: "/admin" },
-    { label: "Facility Controls", icon: ShieldCheck, path: "/admin" },
+    { label: "Admin Overview", icon: LayoutDashboard, path: "/admin" },
+    { label: "Users Overview", icon: Users, path: "/admin/users" },
+    { label: "Facility Controls", icon: ShieldCheck, path: "/admin/facilities" },
+    { label: "Doctor Approvals", icon: Stethoscope, path: "/admin/doctors" },
+    { label: "All Appointments", icon: Calendar, path: "/admin/appointments" },
   ];
 
   const activeLinks = role === "admin" ? adminLinks : role === "doctor" ? doctorLinks : patientLinks;
 
   return (
     <aside className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-mobile-header">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary-light)", fontWeight: "800" }}>
+          <Activity size={20} />
+          <span>MediPulse</span>
+        </div>
+        <button 
+          className="nav-icon-btn" 
+          onClick={onCloseMobile} 
+          aria-label="Close Menu"
+          style={{ width: "32px", height: "32px" }}
+        >
+          <X size={18} />
+        </button>
+      </div>
+
       <div className="sidebar-nav-group">
         <div className="sidebar-label">
           {role.toUpperCase()} NAVIGATION

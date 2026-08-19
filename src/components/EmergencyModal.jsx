@@ -14,13 +14,10 @@ export default function EmergencyModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 1000,
-      display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(6px)"
-    }}>
+    <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card fade-in" onClick={(e) => e.stopPropagation()} style={{
-        background: "var(--color-bg-secondary)", borderRadius: "16px", padding: "28px",
-        maxWidth: "480px", width: "90%", border: "1px solid rgba(239,68,68,0.4)", boxShadow: "0 20px 50px rgba(239,68,68,0.2)"
+        background: "var(--color-bg-surface)", borderRadius: "16px", padding: "28px",
+        maxWidth: "480px", border: "1px solid rgba(239,68,68,0.4)", boxShadow: "0 20px 50px rgba(239,68,68,0.2)"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -40,18 +37,18 @@ export default function EmergencyModal({ isOpen, onClose }) {
               Connecting to 24/7 Central Healthcare Dispatch Center (Helpline 108). Your live GPS location will be transmitted automatically.
             </p>
 
-            <div style={{ background: "var(--color-bg-tertiary)", padding: "14px", borderRadius: "10px", marginBottom: "20px" }}>
+            <div style={{ background: "var(--color-bg-elevated)", padding: "14px", borderRadius: "10px", marginBottom: "20px" }}>
               <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: "600" }}>DETECTED EMERGENCY LOCATION</span>
               <p style={{ fontSize: "14px", fontWeight: "700", marginTop: "2px", display: "flex", alignItems: "center", gap: "6px" }}>
                 <MapPin size={16} style={{ color: "var(--color-danger)" }} /> Park Street, Sector V, City Central Zone
               </p>
             </div>
 
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button className="secondary-button" onClick={onClose} style={{ flex: 1 }}>
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <button className="secondary-button" onClick={onClose} style={{ flex: 1, minWidth: "120px" }}>
                 Cancel
               </button>
-              <button className="danger-button" onClick={handleCallEmergency} style={{ flex: 1, padding: "12px" }}>
+              <button className="danger-button" onClick={handleCallEmergency} style={{ flex: 1, minWidth: "200px", padding: "12px" }}>
                 <PhoneCall size={18} /> CALL 108 AMBULANCE NOW
               </button>
             </div>
