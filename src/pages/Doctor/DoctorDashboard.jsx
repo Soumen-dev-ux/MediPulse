@@ -7,12 +7,9 @@ import {
   CheckCircle2, 
   UserCheck, 
   Search, 
-  Stethoscope, 
   PhoneCall, 
   FileText,
-  AlertCircle,
   ChevronRight,
-  PlusCircle,
   X
 } from "lucide-react";
 import { updateDoctorPresence, serveNextPatient, subscribeToFacility } from "../../firebase/facilities";
@@ -49,8 +46,8 @@ const DoctorDashboard = () => {
     setStatusMode(mode);
     try {
       await updateDoctorPresence(mode === "present", user?.uid || "doc-1", doctorName);
-    } catch (e) {
-      console.error("Failed to sync doctor availability:", e);
+    } catch (error) {
+      console.error("Failed to sync doctor availability:", error);
     }
   };
 
@@ -58,7 +55,7 @@ const DoctorDashboard = () => {
     try {
       await serveNextPatient();
       alert(`📢 Calling Patient ${patient ? patient.name : ""} (#A-${(facility?.currentToken || 12) + 1}) to Room 302!`);
-    } catch (e) {
+    } catch {
       alert(`Calling patient to Room 302...`);
     }
   };
@@ -84,7 +81,7 @@ const DoctorDashboard = () => {
       setRxMedication("");
       setRxDosage("");
       setRxNotes("");
-    } catch (err) {
+    } catch {
       alert(`Prescription issued to ${selectedPatient?.name}.`);
       setSelectedPatient(null);
     } finally {

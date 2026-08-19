@@ -18,7 +18,6 @@ import {
   PhoneCall, 
   Star, 
   Truck,
-  UserCheck, 
   PlusCircle 
 } from "lucide-react";
 import { subscribeToFacility, generateQueueToken } from "../../firebase/facilities";
@@ -57,7 +56,6 @@ export default function FindHealthcare({ onOpenBookModal }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [facility, setFacility] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // Real-time Geolocation tracking (watchPosition)
   useEffect(() => {
@@ -86,12 +84,10 @@ export default function FindHealthcare({ onOpenBookModal }) {
     const unsubscribe = subscribeToFacility((data) => {
       if (isMounted) {
         setFacility(data);
-        setLoading(false);
       }
     });
 
     const timer = setTimeout(() => {
-      if (isMounted) setLoading(false);
     }, 1500);
 
     return () => {
@@ -221,10 +217,6 @@ export default function FindHealthcare({ onOpenBookModal }) {
     return matchesCategory && matchesSearch;
   });
 
-  const handleCallFacility = (item) => {
-    window.open(`tel:${item.phone.replace(/\s/g, "")}`, "_self");
-  };
-
   const handleGetDirections = (item) => {
     const query = encodeURIComponent(`${item.name}, ${item.address}`);
     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
@@ -234,7 +226,7 @@ export default function FindHealthcare({ onOpenBookModal }) {
     try {
       const newToken = await generateQueueToken();
       alert(`🎉 Reserved Queue Token #A-${newToken} at ${node.name}!`);
-    } catch (e) {
+    } catch {
       alert(`Reserved Queue Token at ${node.name}. View status in My Queue Status!`);
     }
   };

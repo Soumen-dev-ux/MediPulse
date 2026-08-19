@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import { 
   Pill, 
-  FileText, 
   Download, 
   CheckCircle2, 
   Clock, 
-  AlertCircle, 
-  PlusCircle,
   Stethoscope
 } from "lucide-react";
 import { useAuth } from "../../Context/useAuth";
@@ -15,14 +12,12 @@ import { subscribeUserPrescriptions, requestPrescriptionRefill } from "../../fir
 export default function Prescriptions() {
   const { user } = useAuth();
   const [prescriptions, setPrescriptions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     const unsubscribe = subscribeUserPrescriptions(user?.uid, (data) => {
       if (isMounted) {
         setPrescriptions(data);
-        setLoading(false);
       }
     });
 
@@ -36,7 +31,7 @@ export default function Prescriptions() {
     try {
       await requestPrescriptionRefill(rx.id);
       alert(`Refill request for ${rx.medication} submitted to ${rx.facility || "pharmacy"}. Doctor approval pending!`);
-    } catch (err) {
+    } catch {
       alert(`Refill requested for ${rx.medication}.`);
     }
   };

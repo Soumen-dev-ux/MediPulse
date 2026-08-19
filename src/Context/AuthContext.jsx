@@ -1,10 +1,9 @@
 import {
-  createContext,
   useEffect,
   useState,
 } from "react";
 
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 import {
   doc,
@@ -14,8 +13,7 @@ import {
 } from "firebase/firestore";
 
 import { auth, db } from "../firebase/config";
-
-export const AuthContext = createContext(null);
+import { AuthContext } from "./auth-context";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -94,7 +92,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
-export const logoutUser = async() => {
-  await signOut(auth);
-};

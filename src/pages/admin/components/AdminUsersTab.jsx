@@ -1,18 +1,13 @@
 import { useState, useEffect } from "react";
 import { 
-  Users, 
   Search, 
   UserPlus, 
   Edit, 
   Trash2, 
-  CheckCircle, 
-  XCircle, 
   ShieldCheck, 
   Stethoscope, 
   Building, 
   User,
-  Filter,
-  RefreshCw,
   X
 } from "lucide-react";
 import { 

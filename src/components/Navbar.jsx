@@ -1,5 +1,5 @@
-import { Sun, Moon, Menu, Activity, LogOut, Search, Bell, PanelLeftClose, PanelLeft } from "lucide-react";
-import { ThemeContext } from "../Context/ThemeContext";
+import { Sun, Moon, Menu, Activity, LogOut, Search, Bell } from "lucide-react";
+import { ThemeContext } from "../Context/theme-context";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../Context/useAuth";

@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
-  Clock, 
   MapPin, 
   UserCheck, 
-  AlertCircle, 
-  CheckCircle2, 
   RefreshCw, 
   XCircle, 
   PhoneCall 
@@ -20,18 +17,15 @@ export default function QueueTracker() {
   const [isCancelled, setIsCancelled] = useState(() => {
     return localStorage.getItem("medipulse_token_cancelled") === "true";
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     const unsubscribe = subscribeToFacility((data) => {
       if (isMounted) {
         setFacility(data);
-        setLoading(false);
       }
     });
     const timer = setTimeout(() => {
-      if (isMounted) setLoading(false);
     }, 1500);
 
     return () => {
@@ -55,7 +49,7 @@ export default function QueueTracker() {
       localStorage.setItem("medipulse_user_token", newToken.toString());
       localStorage.setItem("medipulse_token_cancelled", "false");
       alert(`Issued New Live Queue Token #A-${newToken}!`);
-    } catch (e) {
+    } catch {
       const fallbackToken = (userTokenNumber || 14) + 1;
       setUserTokenNumber(fallbackToken);
       setIsCancelled(false);

@@ -5,19 +5,11 @@ import {
   Users, 
   Stethoscope, 
   Calendar, 
-  Activity, 
   ShieldCheck, 
   Hospital, 
-  Plus, 
-  RotateCcw, 
-  ChevronRight,
-  Phone,
   FileText,
-  Clock,
-  Layers,
-  Settings
+  Layers
 } from "lucide-react";
-import { subscribeToFacility, serveNextPatient, generateQueueToken, resetQueueToken } from "../../firebase/facilities";
 import { subscribeAllUsers, subscribeAllDoctors, subscribeAllFacilities } from "../../firebase/firestore";
 import { subscribeAllAppointments } from "../../firebase/appointments";
 
@@ -43,14 +35,9 @@ export default function AdminDashboard() {
     return "overview";
   };
 
-  const [activeTab, setActiveTab] = useState(getTabFromPath());
-
-  useEffect(() => {
-    setActiveTab(getTabFromPath());
-  }, [location.pathname]);
+  const activeTab = getTabFromPath();
 
   const handleTabChange = (tabKey) => {
-    setActiveTab(tabKey);
     if (tabKey === "overview") navigate("/admin");
     else navigate(`/admin/${tabKey}`);
   };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Calendar, Clock, Stethoscope, Hospital, User, CheckCircle2 } from "lucide-react";
+import { X, Calendar, Clock, Stethoscope, Hospital, CheckCircle2 } from "lucide-react";
 import { createAppointment } from "../firebase/appointments";
 import { generateQueueToken } from "../firebase/facilities";
 import { useAuth } from "../Context/useAuth";

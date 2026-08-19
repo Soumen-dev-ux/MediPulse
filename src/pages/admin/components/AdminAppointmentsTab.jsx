@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
 import { 
-  Calendar, 
   Search, 
-  Clock, 
   CheckCircle2, 
   XCircle, 
-  User, 
-  Stethoscope, 
-  Hospital,
-  AlertCircle
 } from "lucide-react";
 import { subscribeAllAppointments, cancelAppointment } from "../../../firebase/appointments";
 import { addAuditLog } from "../../../firebase/firestore";

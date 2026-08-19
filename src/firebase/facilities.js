@@ -2,7 +2,6 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc,
   increment,
   onSnapshot,
   collection,
@@ -11,12 +10,6 @@ import {
 } from "firebase/firestore";
 
 import { db } from "./config";
-
-const facilityRef = doc(
-  db,
-  "facilities",
-  "city-central"
-);
 
 const defaultFacility = {
   name: "City Central Hospital",
@@ -192,4 +185,4 @@ export const subscribeIssuedTokens = (callback, facilityId = "city-central") => 
     callback([]);
     return () => {};
   }
-};
+};

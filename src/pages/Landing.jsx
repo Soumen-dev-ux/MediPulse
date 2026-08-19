@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
 import {
-  Activity,
   MapPin,
   Clock,
   FileText,
   ArrowRight,
-  ShieldCheck,
-  Users,
-  CheckCircle2
 } from "lucide-react";
 
 export default function Landing() {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, PhoneCall, AlertTriangle, MapPin, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { X, PhoneCall, AlertTriangle, MapPin, CheckCircle2 } from "lucide-react";
 
 export default function EmergencyModal({ isOpen, onClose }) {
   const [dispatchStatus, setDispatchStatus] = useState("idle"); // 'idle' | 'calling' | 'dispatched'

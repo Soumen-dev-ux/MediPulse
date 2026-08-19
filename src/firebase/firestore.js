@@ -11,7 +11,6 @@ import {
   deleteDoc,
   onSnapshot,
   addDoc,
-  orderBy
 } from "firebase/firestore";
 import { db } from "./config";
 

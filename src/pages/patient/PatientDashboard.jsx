@@ -1,18 +1,12 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/useAuth";
-import { logoutUser } from "../../firebase/auth";
 import { 
   Calendar, 
   FileText, 
   MapPin, 
   Clock, 
   Stethoscope, 
-  Bot, 
   AlertTriangle, 
-  CheckCircle2, 
-  ArrowRight,
-  PhoneCall,
   Activity,
   PlusCircle
 } from "lucide-react";
@@ -23,7 +17,6 @@ const PatientDashboard = ({ onOpenBookModal, onOpenSOS }) => {
   const isCancelled = localStorage.getItem("medipulse_token_cancelled") === "true";
   const savedToken = localStorage.getItem("medipulse_user_token");
   const queueToken = isCancelled ? "Cancelled" : savedToken ? `#A-${savedToken}` : "#A-14";
-  const [estimatedWait, setEstimatedWait] = useState("18 mins");
 
   const formattedDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",

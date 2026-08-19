@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { 
-  FileText, 
   Download, 
   Search, 
   Clock, 
-  ShieldCheck, 
-  RefreshCw,
-  CheckCircle,
-  Activity
 } from "lucide-react";
 import { subscribeAuditLogs, addAuditLog } from "../../../firebase/firestore";
 

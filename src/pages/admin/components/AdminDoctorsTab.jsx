@@ -7,10 +7,7 @@ import {
   Award, 
   Building, 
   FileText, 
-  ShieldCheck, 
-  AlertTriangle,
   X,
-  ExternalLink,
   Eye
 } from "lucide-react";
 import { 
@@ -73,7 +70,6 @@ const defaultDoctors = [
 
 export default function AdminDoctorsTab() {
   const [doctors, setDoctors] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -90,7 +86,6 @@ export default function AdminDoctorsTab() {
         } else {
           setDoctors(defaultDoctors);
         }
-        setLoading(false);
       }
     });
 

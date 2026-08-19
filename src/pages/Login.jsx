@@ -29,7 +29,7 @@ export default function Login() {
       // Ensure role matches in Firestore
       await setDoc(doc(db, "users", user.uid), { role }, { merge: true });
       navigate("/dashboard");
-    } catch (loginErr) {
+    } catch {
       // If demo user does not exist yet, automatically register it!
       try {
         const newUser = await registerWithEmail(demoEmail, demoPassword);

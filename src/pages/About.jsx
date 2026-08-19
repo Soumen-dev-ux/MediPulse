@@ -12,7 +12,6 @@ import {
   Activity,
   MapPin,
   Clock,
-  Stethoscope,
   Hospital,
   PhoneCall,
   Navigation,
@@ -22,9 +21,6 @@ import {
   Layers,
   Radar,
   Radio,
-  Star,
-  CheckCircle2,
-  Users
 } from "lucide-react";
 
 // Map Helper Component to dynamically recenter Leaflet map view

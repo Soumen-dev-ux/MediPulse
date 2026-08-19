@@ -3,7 +3,6 @@ import {
   MapPin,
   Clock,
   Pill,
-  Bot,
   AlertTriangle,
   Info,
   Users,
