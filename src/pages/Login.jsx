@@ -76,7 +76,14 @@ export default function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      setError("Google login failed.");
+      const messages = {
+        "auth/operation-not-allowed": "Google sign-in is disabled in Firebase Authentication. Enable the Google provider in the Firebase console.",
+        "auth/unauthorized-domain": `This domain is not authorized for Google sign-in. Add ${window.location.hostname} in Firebase Authentication > Settings > Authorized domains.`,
+        "auth/invalid-api-key": "The Firebase API key is invalid. Check the VITE_FIREBASE_API_KEY value.",
+        "auth/popup-closed-by-user": "Google sign-in was closed before it finished.",
+        "auth/network-request-failed": "Google sign-in could not reach Firebase. Check your internet connection.",
+      };
+      setError(messages[error.code] || error.message || "Google login failed.");
     } finally {
       setLoading(false);
     }

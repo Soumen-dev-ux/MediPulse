@@ -3,6 +3,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   signOut,
@@ -47,10 +48,23 @@ export const loginWithEmail = async (email, password) => {
 
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
 
-  const result = await signInWithPopup(auth, provider);
+  try {
+    const result = await signInWithPopup(auth, provider);
+    return result.user;
+  } catch (error) {
+    const popupUnavailable = [
+      "auth/popup-blocked",
+      "auth/operation-not-supported-in-this-environment",
+    ].includes(error.code);
 
-  return result.user;
+    if (popupUnavailable) {
+      await signInWithRedirect(auth, provider);
+    }
+
+    throw error;
+  }
 };
 
 
