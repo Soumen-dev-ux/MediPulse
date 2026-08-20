@@ -208,7 +208,7 @@ export default function ClinicRegister() {
               <label>Official Phone Number <span className="public-tag">PUBLIC ✅</span></label>
               <div className="input-wrapper" style={{ marginTop: "6px" }}>
                 <Phone size={18} />
-                <input type="tel" placeholder="+91 98765 43210" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                <input type="tel" placeholder="+91 XXXXX XXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} required />
               </div>
               <p className="field-hint">Patients can call your facility directly from the map directory.</p>
             </div>

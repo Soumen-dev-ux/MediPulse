@@ -200,7 +200,7 @@ export default function QueueTracker() {
               <button 
                 className="secondary-button"
                 style={{ flex: 1, minWidth: "140px" }}
-                onClick={() => alert("Contacting clinic reception desk at +91 98765 43210...")}
+                onClick={() => alert("Contacting clinic reception desk at +91 XXXXX XXXXX...")}
               >
                 <PhoneCall size={16} /> Contact Desk
               </button>

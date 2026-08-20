@@ -22,7 +22,7 @@ const defaultDoctors = [
     id: "doc_01",
     name: "Dr. Ananya Sharma",
     email: "ananya.sharma@medipulse.org",
-    phone: "+91 98765 43210",
+    phone: "+91 XXXXX XXXXX",
     specialization: "Cardiology",
     licenseNo: "MCI-2021-9876",
     experience: "12 years",

@@ -53,7 +53,7 @@ export default function About() {
       doctorsPresent: 14,
       queueServing: "#A-14",
       avgWait: "14 mins",
-      phone: "+91 98765 43210",
+      phone: "+91 XXXXX XXXXX",
       rating: 4.9,
       openHours: "Open 24/7",
       coords: { top: "28%", left: "32%" }

@@ -181,7 +181,7 @@ export default function DoctorRegister() {
               </label>
               <div className="input-wrapper" style={{ marginTop: "6px" }}>
                 <Phone size={18} />
-                <input type="tel" placeholder="+91 98765 43210" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                <input type="tel" placeholder="+91 XXXXX XXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} required />
               </div>
               <p className="field-hint">Patients can call you directly. Shown in the healthcare directory.</p>
             </div>

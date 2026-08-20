@@ -36,7 +36,7 @@ export default function Login() {
         await setDoc(doc(db, "users", newUser.uid), {
           name: `Demo ${role.charAt(0).toUpperCase() + role.slice(1)}`,
           email: demoEmail,
-          phone: "+919876543210",
+          phone: "+91XXXXX XXXXX",
           role: role,
           authProvider: "demo",
           createdAt: serverTimestamp(),

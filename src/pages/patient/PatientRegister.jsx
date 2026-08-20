@@ -157,7 +157,7 @@ export default function PatientRegister() {
               <input
                 type="tel"
                 name="phone"
-                placeholder="+91 98765 43210"
+                placeholder="+91 XXXXX XXXXX"
                 value={form.phone}
                 onChange={handleChange}
                 required

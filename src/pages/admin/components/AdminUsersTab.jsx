@@ -20,7 +20,7 @@ import {
 
 // Fallback initial sample users if Firestore table is empty
 const defaultUsers = [
-  { id: "usr_01", name: "Dr. Ananya Sharma", email: "doctor.sharma@medipulse.org", phone: "+91 98765 43210", role: "doctor", status: "Active", createdAt: "2026-01-15" },
+  { id: "usr_01", name: "Dr. Ananya Sharma", email: "doctor.sharma@medipulse.org", phone: "+91 XXXXX XXXXX", role: "doctor", status: "Active", createdAt: "2026-01-15" },
   { id: "usr_02", name: "Soumen Pore", email: "soumen@medipulse.org", phone: "+91 98300 12345", role: "patient", status: "Active", createdAt: "2026-02-01" },
   { id: "usr_03", name: "System Administrator", email: "admin@medipulse.org", phone: "+91 98000 00000", role: "admin", status: "Active", createdAt: "2026-01-01" },
   { id: "usr_04", name: "City Central Pharmacy", email: "pharmacy@citycentral.org", phone: "+91 98111 22233", role: "clinic", status: "Active", createdAt: "2026-02-10" },
@@ -389,7 +389,7 @@ export default function AdminUsersTab() {
                 <label style={{ fontSize: "13px", fontWeight: "600" }}>Phone Number</label>
                 <input 
                   type="tel" 
-                  placeholder="+91 98765 43210" 
+                  placeholder="+91 XXXXX XXXXX" 
                   value={addPhone} 
                   onChange={(e) => setAddPhone(e.target.value)} 
                   style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--color-border)", background: "var(--color-bg-card)", color: "var(--color-text-main)" }}

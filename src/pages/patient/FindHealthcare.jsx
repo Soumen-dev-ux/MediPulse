@@ -111,7 +111,7 @@ export default function FindHealthcare({ onOpenBookModal }) {
       doctor: "Dr. Sharma (MBBS, MD)",
       status: facility?.isDoctorPresent ? "present" : "away",
       currentToken: `#A-${facility?.currentToken || 12}`,
-      phone: "+91 98765 43210",
+      phone: "+91 XXXXX XXXXX",
       openHours: "Open 24/7",
       hasPharmacy: true,
       deliveryEnabled: false,
