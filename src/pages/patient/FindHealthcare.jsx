@@ -178,7 +178,7 @@ export default function FindHealthcare({ onOpenBookModal }) {
       lat: 22.5400,
       lng: 88.3900,
       rating: 4.6,
-      doctor: "Dr. Soumen Pore (Medical Director)",
+      doctor: "Dr. Rohit Roy (Medical Director)",
       status: "present",
       currentToken: "#C-03",
       phone: "+91 98555 66778",

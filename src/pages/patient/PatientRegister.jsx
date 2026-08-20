@@ -108,7 +108,7 @@ export default function PatientRegister() {
               <input
                 type="text"
                 name="name"
-                placeholder="Soumen Pore"
+                placeholder="Enter Your Name"
                 value={form.name}
                 onChange={handleChange}
                 required
@@ -173,7 +173,7 @@ export default function PatientRegister() {
               <input
                 type="text"
                 name="city"
-                placeholder="Kolkata, Kathmandu..."
+                placeholder="Enter Address..."
                 value={form.city}
                 onChange={handleChange}
                 required

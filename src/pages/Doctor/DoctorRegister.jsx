@@ -154,7 +154,7 @@ export default function DoctorRegister() {
               <label>Full Name</label>
               <div className="input-wrapper" style={{ marginTop: "6px" }}>
                 <User size={18} />
-                <input type="text" placeholder="Dr. Soumen Pore" value={name} onChange={(e) => setName(e.target.value)} required />
+                <input type="text" placeholder="Enter Your Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
             </div>
 
@@ -190,7 +190,7 @@ export default function DoctorRegister() {
               <label>Current Clinic Address</label>
               <div className="input-wrapper" style={{ marginTop: "6px" }}>
                 <MapPin size={18} />
-                <input type="text" placeholder="123 Medical Park, Block A, Kolkata" value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} required />
+                <input type="text" placeholder="Enter Address..." value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} required />
               </div>
             </div>
 

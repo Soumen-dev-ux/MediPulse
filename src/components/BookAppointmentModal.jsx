@@ -85,11 +85,11 @@ export default function BookAppointmentModal({ isOpen, onClose }) {
               <select value={doctor} onChange={(e) => setDoctor(e.target.value)} style={{ background: "transparent", border: "none", color: "var(--color-text-primary)", width: "100%", outline: "none" }}>
                 <option value="Dr. Sharma">Dr. Sharma (Senior Cardiologist)</option>
                 <option value="Dr. Ananya Roy">Dr. Ananya Roy (Orthopedic Specialist)</option>
-                <option value="Dr. Soumen Pore">Dr. Soumen Pore (General Physician)</option>
+                <option value="Dr. Kingshuk Pal">Dr. Kingshuk Pal (General Physician)</option>
               </select>
             </div>
           </div>
-
+          
           <div className="form-row-2">
             <div>
               <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--color-text-secondary)" }}>Preferred Date</label>

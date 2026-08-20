@@ -10,7 +10,7 @@ const defaultAuditLogs = [
   { id: "log_01", action: "Queue Token Served", details: "Served token #A-102 at City Central Hospital (Cardiology)", performedBy: "Admin", timestamp: "2026-08-18 00:10:15" },
   { id: "log_02", action: "Doctor Verified", details: "Approved verification credentials for Dr. Ananya Sharma (MCI-2021-9876)", performedBy: "Admin", timestamp: "2026-08-17 23:45:00" },
   { id: "log_03", action: "Walk-in Token Issued", details: "Issued Queue Token #A-103 for walk-in patient (+919876543210)", performedBy: "Admin", timestamp: "2026-08-17 22:30:10" },
-  { id: "log_04", action: "User Role Updated", details: "Promoted user Soumen Pore (patient@medipulse.org) role permissions", performedBy: "Admin", timestamp: "2026-08-17 21:15:04" },
+  
   { id: "log_05", action: "Facility Status Changed", details: "Updated Apollo Medical Hub operational status to 'Operational'", performedBy: "Admin", timestamp: "2026-08-17 19:00:22" }
 ];
 

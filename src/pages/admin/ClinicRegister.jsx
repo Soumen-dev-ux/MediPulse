@@ -217,7 +217,7 @@ export default function ClinicRegister() {
               <label>Exact Address *</label>
               <div className="input-wrapper" style={{ marginTop: "6px" }}>
                 <MapPin size={18} />
-                <input type="text" placeholder="123 Medical Park, Sector V, Kolkata" value={address} onChange={(e) => setAddress(e.target.value)} required />
+                <input type="text" placeholder="Enter Address..." value={address} onChange={(e) => setAddress(e.target.value)} required />
               </div>
             </div>
 
