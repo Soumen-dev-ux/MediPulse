@@ -1111,6 +1111,238 @@ a {
   background: var(--color-bg-hover);
 }
 
+/* Admin appointments */
+.appointments-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.appointments-heading h2 {
+  margin-top: 2px;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.appointments-heading p:last-child {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.sync-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 999px;
+  color: var(--color-primary-light);
+  background: var(--color-primary-glow);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sync-indicator svg {
+  animation: pulseDot 2s infinite;
+}
+
+.appointment-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.appointment-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.appointment-summary-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.appointment-summary-card span {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.appointment-summary-card strong {
+  margin-top: 2px;
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 10px;
+}
+
+.summary-icon.total { color: #60a5fa; background: rgba(59, 130, 246, 0.14); }
+.summary-icon.pending { color: #fbbf24; background: rgba(245, 158, 11, 0.14); }
+.summary-icon.confirmed { color: var(--color-primary-light); background: var(--color-primary-glow); }
+.summary-icon.completed { color: #34d399; background: rgba(52, 211, 153, 0.14); }
+
+.appointments-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.appointment-search {
+  flex: 1;
+  min-width: 220px;
+}
+
+.appointment-filter {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.appointment-filter:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.panel-caption {
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.appointments-loading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 22px 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.appointments-loading svg {
+  animation: pulseDot 1.4s infinite;
+}
+
+.appointment-person,
+.appointment-doctor {
+  display: block;
+  font-size: 13px;
+}
+
+.appointment-ref,
+.appointment-date > div:last-child {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.appointment-doctor {
+  font-weight: 650;
+}
+
+.appointment-location {
+  font-size: 13px;
+}
+
+.appointment-location span {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-primary-light);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.appointment-date {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.appointment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.appointment-status.confirmed { color: var(--color-primary-light); background: var(--color-primary-glow); border-color: rgba(16, 185, 129, 0.28); }
+.appointment-status.pending { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.28); }
+.appointment-status.completed { color: #34d399; background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.28); }
+.appointment-status.cancelled { color: #fca5a5; background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.28); }
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.appointment-archived {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .appointments-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .appointment-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .appointments-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .appointment-search {
+    width: 100%;
+  }
+
+  .appointment-filter {
+    width: 100%;
+  }
+}
+
 /* ================================
    ADMIN PORTAL SPECIFIC
 ================================ */

@@ -3,6 +3,10 @@ import {
   Search, 
   CheckCircle2, 
   XCircle, 
+  CalendarDays,
+  Clock3,
+  UsersRound,
+  Activity,
 } from "lucide-react";
 import { subscribeAllAppointments, cancelAppointment } from "../../../firebase/appointments";
 import { addAuditLog } from "../../../firebase/firestore";
@@ -122,28 +126,62 @@ export default function AdminAppointmentsTab() {
   const getStatusBadge = (st) => {
     switch ((st || "confirmed").toLowerCase()) {
       case "confirmed":
-        return <span className="status-badge confirmed">Confirmed</span>;
+        return <span className="appointment-status confirmed"><span className="status-dot" />Confirmed</span>;
       case "completed":
-        return <span className="status-badge confirmed" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#34d399" }}>Completed</span>;
+        return <span className="appointment-status completed"><span className="status-dot" />Completed</span>;
       case "pending":
-        return <span className="status-badge calling">Pending</span>;
+        return <span className="appointment-status pending"><span className="status-dot" />Pending</span>;
       case "cancelled":
-        return <span className="status-badge away" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#fca5a5" }}>Cancelled</span>;
+        return <span className="appointment-status cancelled"><span className="status-dot" />Cancelled</span>;
       default:
-        return <span className="status-badge confirmed">{st}</span>;
+        return <span className="appointment-status confirmed"><span className="status-dot" />{st}</span>;
     }
   };
 
+  const appointmentCounts = appointments.reduce((counts, appointment) => {
+    const status = (appointment.status || "confirmed").toLowerCase();
+    if (status === "pending") counts.pending += 1;
+    if (status === "confirmed") counts.confirmed += 1;
+    if (status === "completed") counts.completed += 1;
+    return counts;
+  }, { pending: 0, confirmed: 0, completed: 0 });
+
   return (
     <div className="fade-in">
-      {/* Search & Status Filters */}
-      <div style={{ display: "flex", gap: "12px", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: "12px", flex: 1, minWidth: "280px" }}>
-          <div className="input-wrapper" style={{ flex: 1 }}>
+      <div className="appointments-heading">
+        <div>
+          <p className="eyebrow">OPERATIONS · LIVE SCHEDULE</p>
+          <h2>Appointment control room</h2>
+          <p>Review every booking across the MediPulse care network.</p>
+        </div>
+        <div className="sync-indicator"><Activity size={15} /> Live network sync</div>
+      </div>
+
+      <div className="appointment-summary-grid">
+        <div className="appointment-summary-card">
+          <div className="summary-icon total"><CalendarDays size={19} /></div>
+          <div><span>Total bookings</span><strong>{appointments.length}</strong></div>
+        </div>
+        <div className="appointment-summary-card">
+          <div className="summary-icon pending"><Clock3 size={19} /></div>
+          <div><span>Awaiting approval</span><strong>{appointmentCounts.pending}</strong></div>
+        </div>
+        <div className="appointment-summary-card">
+          <div className="summary-icon confirmed"><UsersRound size={19} /></div>
+          <div><span>Confirmed visits</span><strong>{appointmentCounts.confirmed}</strong></div>
+        </div>
+        <div className="appointment-summary-card">
+          <div className="summary-icon completed"><CheckCircle2 size={19} /></div>
+          <div><span>Completed visits</span><strong>{appointmentCounts.completed}</strong></div>
+        </div>
+      </div>
+
+      <div className="appointments-toolbar">
+        <div className="input-wrapper appointment-search">
             <Search size={18} />
             <input 
               type="text" 
-              placeholder="Search by patient, doctor, facility, or department..." 
+              placeholder="Search patient, doctor, facility..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -152,7 +190,7 @@ export default function AdminAppointmentsTab() {
           <select 
             value={statusFilter} 
             onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ padding: "10px 14px", borderRadius: "10px", border: "1px solid var(--color-border)", background: "var(--color-bg-card)", color: "var(--color-text-main)", fontSize: "14px", fontWeight: "500" }}
+            className="appointment-filter"
           >
             <option value="all">All Appointment Statuses</option>
             <option value="confirmed">Confirmed</option>
@@ -161,17 +199,17 @@ export default function AdminAppointmentsTab() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-      </div>
 
-      {/* Appointments Table */}
       <div className="card-panel">
         <div className="panel-title-bar">
-          <h2>Network Appointments Log ({filteredAppointments.length})</h2>
-          <span className="status-badge confirmed">Live Network Sync</span>
+          <div>
+            <h2>All appointments</h2>
+            <p className="panel-caption">{filteredAppointments.length} records match your current view</p>
+          </div>
         </div>
 
         {loading ? (
-          <p style={{ padding: "20px", color: "var(--color-text-secondary)" }}>Loading appointments...</p>
+          <div className="appointments-loading"><Activity size={18} /> Loading appointments...</div>
         ) : (
           <div className="table-responsive-wrapper">
             <table className="patient-queue-table">
@@ -190,23 +228,23 @@ export default function AdminAppointmentsTab() {
                   <tr key={app.id}>
                     <td>
                       <div>
-                        <strong style={{ fontSize: "14px", display: "block" }}>{app.patientName}</strong>
-                        <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>Ref: {app.id}</span>
+                        <strong className="appointment-person">{app.patientName}</strong>
+                        <span className="appointment-ref">Ref: {app.id}</span>
                       </div>
                     </td>
                     <td>
-                      <div style={{ fontSize: "13px", fontWeight: "600" }}>{app.doctorName || "Pending Assign"}</div>
+                      <div className="appointment-doctor">{app.doctorName || "Pending assign"}</div>
                     </td>
                     <td>
-                      <div style={{ fontSize: "13px" }}>
+                      <div className="appointment-location">
                         <div>{app.facilityName || "City Central Hospital"}</div>
-                        <span style={{ fontSize: "11px", color: "var(--color-primary-light)" }}>{app.department || "General"}</span>
+                        <span>{app.department || "General"}</span>
                       </div>
                     </td>
                     <td>
-                      <div style={{ fontSize: "13px" }}>
+                      <div className="appointment-date">
                         <div>{app.date}</div>
-                        <div style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>{app.time}</div>
+                        <div>{app.time}</div>
                       </div>
                     </td>
                     <td>{getStatusBadge(app.status)}</td>
@@ -216,14 +254,14 @@ export default function AdminAppointmentsTab() {
                           <>
                             <button 
                               className="secondary-button" 
-                              style={{ padding: "5px 10px", fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                              style={{ padding: "7px 10px", fontSize: "11px" }}
                               onClick={() => handleMarkCompleted(app)}
                             >
                               <CheckCircle2 size={13} /> Complete
                             </button>
                             <button 
                               className="danger-button" 
-                              style={{ padding: "5px 10px", fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                              style={{ padding: "7px 10px", fontSize: "11px" }}
                               onClick={() => handleCancelAppointment(app)}
                             >
                               <XCircle size={13} /> Cancel
@@ -231,7 +269,7 @@ export default function AdminAppointmentsTab() {
                           </>
                         )}
                         {((app.status || "").toLowerCase() === "completed" || (app.status || "").toLowerCase() === "cancelled") && (
-                          <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>Archived</span>
+                          <span className="appointment-archived">Archived</span>
                         )}
                       </div>
                     </td>
