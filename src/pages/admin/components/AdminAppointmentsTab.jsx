@@ -105,7 +105,7 @@ export default function AdminAppointmentsTab() {
     addAuditLog("Appointment Completed", `Admin marked appointment #${appObj.id} as completed`, "Admin");
     alert(`Appointment for ${appObj.patientName} marked as Completed.`);
   };
-
+  
   const filteredAppointments = appointments.filter((a) => {
     const matchesSearch =
       (a.patientName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
