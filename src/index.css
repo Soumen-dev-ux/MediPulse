@@ -1883,7 +1883,6 @@ a {
   box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
-/* FIX: Added missing .google-button selector */
 .google-button {
   width: 100%;
   display: flex;
